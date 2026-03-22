@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FinNexus - Activation</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .aurora-bg {
+                background: 
+                    radial-gradient(circle at 50% -10%, rgba(0, 242, 255, 0.15) 0%, transparent 40%),
+                    radial-gradient(circle at 50% 110%, rgba(20, 184, 166, 0.15) 0%, transparent 40%),
+                    #0D0D0D;
+            }
+            .glass-checkbox-card {
+                background: rgba(255, 255, 255, 0.03);
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(0, 242, 255, 0.4);
+            }
+            .btn-3d-emerald {
+                background: radial-gradient(circle at 50% 0%, #34D399 0%, #059669 100%);
+                box-shadow: 0 10px 30px -5px rgba(5, 150, 105, 0.5),
+                            inset 0 4px 12px rgba(255, 255, 255, 0.4);
+            }
+        }
+    </style>
+</head>
+<body class="aurora-bg text-white font-sans min-h-screen flex flex-col overflow-x-hidden">
+    
+    <header class="p-6 flex items-center">
+        <button onclick="window.history.back()" class="p-2 -ml-2 text-white/70 hover:text-white transition-all">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center justify-center px-8 text-center -mt-12">
+        <div class="mb-10 relative">
+            <div class="absolute inset-0 bg-electric-cyan/20 blur-[60px] rounded-full"></div>
+            <div class="relative bg-black/40 border border-white/10 p-8 rounded-full shadow-2xl">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="#00F2FF" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L4 5V11C4 16.19 7.41 21.05 12 22.5C16.59 21.05 20 16.19 20 11V5L12 2Z" fill-opacity="0.2" stroke="#00F2FF" stroke-width="1.5"/>
+                    <path d="M12 11.5L10.5 10L9 11.5L12 14.5L15 11.5L13.5 10L12 11.5Z" fill="#00F2FF"/>
+                    <path d="M12 17C12 17 12 17 12 17C9.23858 17 7 14.7614 7 12C7 9.23858 9.23858 7 12 7C14.7614 7 17 9.23858 17 12C17 14.7614 14.7614 17 12 17Z" stroke="#00F2FF" stroke-width="1.5"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="space-y-3 mb-12">
+            <h1 class="text-3xl font-bold tracking-tight text-white">You’re Almost Protected</h1>
+            <p class="text-white/60 text-lg max-w-[280px] mx-auto leading-relaxed">Activate your wallet firewall to stay shielded.</p>
+        </div>
+
+        <label class="glass-checkbox-card w-full max-w-sm rounded-[24px] p-6 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-all mb-8">
+            <input id="terms-check" checked type="checkbox" class="w-6 h-6 rounded bg-cyan-900/50 border-cyan-400 text-cyan-400 focus:ring-0 cursor-pointer"/>
+            <span class="text-left text-sm font-medium leading-snug text-white/90">
+                I agree to the FinNexus Terms and Conditions & Privacy Policy.
+            </span>
+        </label>
+
+        <div class="max-w-xs mb-12">
+            <p class="text-[10px] uppercase tracking-[0.3em] text-cyan-400 font-bold mb-3">Mission Statement</p>
+            <p class="text-sm italic text-white/40 leading-relaxed font-light">
+                "FinNexus: The Vaccine for your Wallet. We stand as the ultimate barrier between your wealth and the digital unknown."
+            </p>
+        </div>
+
+        <div class="flex items-center gap-2 mb-8">
+            <div class="h-1.5 w-1.5 rounded-full bg-cyan-400/20"></div>
+            <div class="h-1.5 w-1.5 rounded-full bg-cyan-400/20"></div>
+            <div class="h-1.5 w-8 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(0,242,255,0.8)]"></div>
+        </div>
+    </main>
+
+    <footer class="p-8 pb-12 w-full max-w-sm mx-auto">
+        <button id="activate-btn" class="btn-3d-emerald w-full py-5 rounded-2xl text-[#0D0D0D] text-xl font-bold tracking-widest uppercase flex items-center justify-center gap-3 active:scale-95 transition-transform">
+            GET STARTED
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13 10V3L4 14H11V21L20 10H13Z"/>
+            </svg>
+        </button>
+    </footer>
+
+    <script>
+        document.getElementById('activate-btn').addEventListener('click', () => {
+            if (!document.getElementById('terms-check').checked) {
+                alert("Please agree to the Terms of Service.");
+                return;
+            }
+
+            // GATHER DATA FROM STORAGE
+            const mobile = localStorage.getItem('finnexus_temp_mobile');
+            const name = localStorage.getItem('finnexus_temp_name');
+            const age = localStorage.getItem('finnexus_temp_age');
+            const upi = localStorage.getItem('finnexus_preferred_upi');
+
+            // CREATE PERMANENT PROFILE
+            const profile = {
+                mobile: mobile,
+                name: name,
+                age: age,
+                preferred_upi: upi,
+                status: "ACTIVE"
+            };
+
+            // SEAL THE DATABASE (Save by phone number)
+            localStorage.setItem(`finnexus_profile_${mobile}`, JSON.stringify(profile));
+            
+            // Clean up temporary session data
+            localStorage.removeItem('finnexus_temp_name');
+            localStorage.removeItem('finnexus_temp_age');
+
+            // MISSION COMPLETE: Go to Home
+            window.location.href = '../../home.html';
+        });
+    </script>
+</body>
+</html>

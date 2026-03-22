@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FinNexus | Secure Scanner</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        body { background-color: #0D0D0D; color: white; font-family: 'Inter', sans-serif; overflow: hidden; }
+        .scanner-grid { border: 4px solid #3deb91; border-style: double; border-radius: 40px; cursor: pointer; }
+        .btn-verify { background: linear-gradient(135deg, #3deb91 0%, #10B981 100%); box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4); }
+        .scan-line { height: 2px; background: #3deb91; width: 100%; position: absolute; top: 0; animation: scan 3s linear infinite; box-shadow: 0 0 15px #3deb91; }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div id="phase-scanner" class="flex-1 flex flex-col p-6">
+        <header class="flex justify-between items-center mb-10">
+            <button onclick="window.location.href='home.html'" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                <span class="material-icons-round">arrow_back</span>
+            </button>
+            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Scan to Pay</span>
+            <div class="w-10"></div>
+        </header>
+
+        <div class="flex-1 flex flex-col items-center justify-center">
+            <div onclick="simulateScan('fake.merchant@finnexus')" class="w-72 h-72 scanner-grid relative overflow-hidden bg-white/5 group">
+                <div class="scan-line"></div>
+                <div class="absolute inset-0 flex items-center justify-center opacity-20 group-hover:opacity-40 transition-opacity">
+                    <span class="material-symbols-outlined text-9xl">qr_code_2</span>
+                </div>
+            </div>
+            <p class="mt-8 text-xs text-slate-500 uppercase tracking-widest animate-pulse text-center">Tap the grid to scan<br>scammer ID for testing</p>
+        </div>
+
+        <footer class="space-y-4 mb-8">
+            <button onclick="openManualEntry('UPI ID')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-bold text-xs tracking-widest uppercase">Pay using UPI ID</button>
+            <button onclick="openManualEntry('Mobile')" class="w-full py-4 rounded-2xl bg-white/5 border border-white/10 font-bold text-xs tracking-widest uppercase">Pay using Mobile</button>
+        </footer>
+    </div>
+
+    <div id="phase-verify" class="hidden fixed inset-0 z-50 bg-[#0D0D0D] flex flex-col p-6">
+        <header class="flex items-center gap-4 mb-10">
+            <button onclick="location.reload()" class="material-icons-round">close</button>
+            <h2 class="text-xl font-bold">Review Payment</h2>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center space-y-8">
+            <div class="text-center">
+                <div id="merchant-icon-box" class="w-20 h-20 rounded-full bg-[#3deb91]/10 flex items-center justify-center mx-auto mb-4 border border-[#3deb91]/20">
+                    <span id="merchant-icon" class="material-icons-round text-4xl text-[#3deb91]">store</span>
+                </div>
+                <h1 id="merchant-name" class="text-3xl font-bold">Unknown</h1>
+                <p id="merchant-id" class="text-slate-500 text-sm">loading...</p>
+            </div>
+
+            <div class="w-full space-y-8">
+                <div class="text-center">
+                    <span class="text-3xl font-bold text-[#3deb91] mr-2">₹</span>
+                    <input id="input-amount" type="number" class="bg-transparent border-none text-6xl font-black text-white focus:ring-0 w-64 text-center" placeholder="0"/>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3" id="cat-grid">
+                    <button onclick="selectCat('Food', this)" class="cat-btn py-4 rounded-2xl bg-[#3deb91]/20 border border-[#3deb91]/40 text-sm font-bold">Food</button>
+                    <button onclick="selectCat('Fuel', this)" class="cat-btn py-4 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">Fuel</button>
+                    <button onclick="selectCat('Travel', this)" class="cat-btn py-4 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">Travel</button>
+                    <button onclick="selectCat('Rent', this)" class="cat-btn py-4 rounded-2xl bg-white/5 border border-white/10 text-sm font-bold">Rent</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="pb-12">
+            <button onclick="handleVerifyAndProceed()" class="btn-verify w-full py-5 rounded-2xl text-black font-black text-lg tracking-widest uppercase flex items-center justify-center gap-3">
+                <span class="material-icons-round">shield</span>
+                Verify & Proceed
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        let selectedCategory = "Food";
+        const REGISTRY = {
+            "fake.merchant@finnexus": { name: "FLAGGED: Fraudulent Account", icon: "warning", isScam: true },
+            "9876543210": { name: "FLAGGED: Scam Number", icon: "report", isScam: true },
+            "merchant.bluetokai@finnexus": { name: "Blue Tokai Coffee", icon: "coffee", isScam: false }
+        };
+
+        function simulateScan(id) {
+            const data = REGISTRY[id] || { name: "Verified Merchant", icon: "store", isScam: false };
+            document.getElementById('merchant-name').textContent = data.name;
+            document.getElementById('merchant-id').textContent = id;
+            document.getElementById('merchant-icon').textContent = data.icon;
+            document.getElementById('phase-scanner').classList.add('hidden');
+            document.getElementById('phase-verify').classList.remove('hidden');
+        }
+
+        function openManualEntry(type) {
+            const id = prompt(`Enter ${type}:`);
+            if (id) simulateScan(id);
+        }
+
+        function selectCat(name, el) {
+            selectedCategory = name;
+            document.querySelectorAll('.cat-btn').forEach(b => {
+                b.classList.replace('bg-[#3deb91]/20', 'bg-white/5');
+                b.classList.replace('border-[#3deb91]/40', 'border-white/10');
+            });
+            el.classList.replace('bg-white/5', 'bg-[#3deb91]/20');
+            el.classList.replace('border-white/10', 'border-[#3deb91]/40');
+        }
+
+        function handleVerifyAndProceed() {
+            const amount = parseFloat(document.getElementById('input-amount').value);
+            const id = document.getElementById('merchant-id').textContent;
+            
+            if (!amount || amount <= 0) return alert("Enter valid amount");
+
+            // LAYER 1: DEFENDER (Scam Check)
+            if (REGISTRY[id] && REGISTRY[id].isScam) {
+                window.location.href = 'pages/onboarding/barriers/defender.html'; 
+                return;
+            }
+
+            // --- LAYER 2: BUDGET PRECISION MATH ---
+            const walletData = JSON.parse(localStorage.getItem('finnexus_wallet_data')) || { categories: [] };
+            const categoryObj = walletData.categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase());
+            
+            // Logic: If the category isn't found, we assume ₹0 limit
+            const limit = categoryObj ? parseFloat(categoryObj.limit) : 0;
+            const spent = parseFloat(localStorage.getItem(`budget_${selectedCategory.toLowerCase()}_spent`) || 0);
+            
+            let overage = 0;
+            const totalWithThisPayment = spent + amount;
+
+            if (totalWithThisPayment > limit) {
+                // If we were already over the limit, the whole payment is overage
+                // If this payment pushes us over, only the gap is overage
+                overage = (spent >= limit) ? amount : (totalWithThisPayment - limit);
+            }
+
+            const pending = {
+                amount: amount,
+                category: selectedCategory,
+                merchantName: document.getElementById('merchant-name').textContent,
+                merchantID: id,
+                overage: overage.toFixed(2)
+            };
+            sessionStorage.setItem('pending_payment', JSON.stringify(pending));
+
+            if (overage > 0) {
+                window.location.href = 'pages/onboarding/barriers/budget.html';
+            } else {
+                window.location.href = 'pages/onboarding/success.html';
+            }
+        }
+    </script>
+</body>
+</html>

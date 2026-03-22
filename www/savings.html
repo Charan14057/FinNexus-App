@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Savings & Goals - FinNexus</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#6ee591",
+                        "secondary-fixed": "#00fbfb",
+                        "surface-container-lowest": "#0e0e0e",
+                        "background": "#131313",
+                    },
+                    fontFamily: { "headline": ["Manrope"], "body": ["Inter"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .aurora-blur { filter: blur(80px); opacity: 0.15; z-index: -1; }
+        .glass-card { background: rgba(53, 53, 52, 0.4); backdrop-filter: blur(24px); border: 1px solid rgba(110, 229, 145, 0.08); }
+        body { min-height: 100dvh; background-color: #131313; }
+    </style>
+</head>
+<body class="bg-background text-slate-100 font-body flex flex-col relative overflow-x-hidden">
+
+<div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary rounded-full aurora-blur"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary-fixed rounded-full aurora-blur"></div>
+
+<header class="flex items-center p-4 pt-4 justify-between sticky top-0 z-40 bg-background/50 backdrop-blur-md">
+    <button onclick="window.location.href='home.html'" class="text-white flex size-9 shrink-0 items-center justify-center rounded-full bg-surface-container-high active:scale-90 transition-all">
+        <span class="material-symbols-outlined text-xl">arrow_back</span>
+    </button>
+    <h2 class="font-headline text-base font-bold tracking-tight flex-1 text-center pr-9 uppercase tracking-widest text-[10px]">Savings & Goals</h2>
+</header>
+
+<main class="flex-1 px-4 pb-24">
+    <section class="mt-4 mb-6">
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-2xl">
+            <h3 class="text-slate-500 tracking-[0.12em] text-[10px] font-bold uppercase mb-1">Total Wealth Protected</h3>
+            <h1 id="main-savings-total" class="text-primary font-headline tracking-tight text-4xl font-extrabold drop-shadow-[0_0_15px_rgba(110,229,145,0.4)]">
+                ₹0.00
+            </h1>
+            <div class="w-16 h-[1px] bg-white/10 my-4"></div>
+            <div class="flex flex-col items-center">
+                <span class="text-[9px] uppercase font-bold text-slate-500 tracking-widest mb-0.5">Emergency Cover</span>
+                <span id="emergency-total" class="text-secondary-fixed font-headline font-bold text-base">₹0</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-6">
+        <h2 class="font-headline text-lg font-bold tracking-tight mb-3 px-1">Category Savings</h2>
+        <div class="grid grid-cols-2 gap-3" id="savings-grid">
+            </div>
+    </section>
+
+    <section class="mb-4">
+        <div class="flex items-center justify-between mb-3 px-1">
+            <h2 class="font-headline text-lg font-bold tracking-tight">Goal Architect</h2>
+            <span class="text-primary text-[10px] font-bold uppercase tracking-wider">New Goal</span>
+        </div>
+        <div class="glass-card rounded-2xl p-4 flex flex-col gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary/20 p-2.5 rounded-xl">
+                    <span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">target</span>
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-white">Financial Milestone</p>
+                    <p class="text-[11px] text-slate-500">Plan your next big purchase</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-[9px] uppercase font-bold text-slate-500 tracking-widest ml-1">Current Pot</label>
+                    <div class="bg-surface-container-lowest rounded-xl p-3">
+                        <input id="goal-current" type="number" class="bg-transparent border-none p-0 text-secondary-fixed font-bold text-base w-full focus:ring-0" value="0"/>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-[9px] uppercase font-bold text-slate-500 tracking-widest ml-1">Target Amount</label>
+                    <div class="bg-surface-container-lowest rounded-xl p-3">
+                        <input id="goal-target" type="number" class="bg-transparent border-none p-0 text-secondary-fixed font-bold text-base w-full focus:ring-0" value="200000"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-primary/5 rounded-xl p-3">
+                <p id="goal-result-text" class="text-[10px] text-primary/80 italic leading-relaxed text-center">
+                    Enter your goal to see your progress
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="fixed bottom-0 left-0 w-full z-50">
+    <div class="flex gap-2 border-t border-white/5 bg-[#0e1611]/95 backdrop-blur-xl px-4 pb-8 pt-3">
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="home.html">
+            <span class="material-symbols-outlined">home</span>
+            <p class="text-[10px] font-medium">Home</p>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-white relative" href="savings.html">
+            <div class="absolute -top-3 w-10 h-[2px] bg-primary rounded-full"></div>
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">savings</span>
+            <p class="text-[10px] font-bold">Savings</p>
+        </a>
+        <a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500" href="history.html">
+            <span class="material-symbols-outlined">history</span>
+            <p class="text-[10px] font-medium">History</p>
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. DATA PULL
+        const walletData = JSON.parse(localStorage.getItem('finnexus_wallet_data')) || { categories: [] };
+        const savingsGrid = document.getElementById('savings-grid');
+        
+        let totalCategorySavings = 0;
+
+        // 2. CALCULATE CATEGORY SAVINGS
+        // Logic: Savings = Limit - Spent
+        walletData.categories.forEach(cat => {
+            const spent = parseFloat(localStorage.getItem(`budget_${cat.name.toLowerCase()}_spent`) || 0);
+            const saved = Math.max(0, cat.limit - spent);
+            totalCategorySavings += saved;
+
+            const card = `
+                <div class="glass-card rounded-xl p-3 flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-white/5 p-1.5 rounded-lg">
+                            <span class="material-symbols-outlined text-secondary-fixed text-lg">${cat.icon}</span>
+                        </div>
+                        <p class="text-[12px] font-bold text-white">${cat.name}</p>
+                    </div>
+                    <div>
+                        <p class="text-[14px] font-bold text-primary">₹${saved.toLocaleString()}</p>
+                        <p class="text-[8px] text-slate-500 font-medium uppercase tracking-tighter">Available Surplus</p>
+                    </div>
+                </div>`;
+            savingsGrid.insertAdjacentHTML('beforeend', card);
+        });
+
+        // 3. SCAM PROTECTION SAVINGS (Layer 1)
+        // Every block we do saves the user money. Let's pull from the history of blocked scams.
+        const history = JSON.parse(localStorage.getItem('finnexus_history') || '[]');
+        const blockedScamsValue = 1500; // Emergency cover mock / or from blocked events
+
+        // 4. UPDATE TOTALS
+        document.getElementById('main-savings-total').innerText = `₹${(totalCategorySavings + blockedScamsValue).toLocaleString()}.00`;
+        document.getElementById('emergency-total').innerText = `₹${blockedScamsValue.toLocaleString()}`;
+
+        // 5. GOAL ARCHITECT LOGIC
+        const updateGoal = () => {
+            const current = parseFloat(document.getElementById('goal-current').value) || 0;
+            const target = parseFloat(document.getElementById('goal-target').value) || 0;
+            const diff = target - current;
+
+            if (diff > 0) {
+                document.getElementById('goal-result-text').innerText = 
+                    `₹${target.toLocaleString()} - ₹${current.toLocaleString()} = ₹${diff.toLocaleString()} left for your monthly goal`;
+            } else {
+                document.getElementById('goal-result-text').innerText = "Milestone Reached! 🎉 Target acquired.";
+            }
+        };
+
+        document.getElementById('goal-current').addEventListener('input', updateGoal);
+        document.getElementById('goal-target').addEventListener('input', updateGoal);
+        updateGoal(); // Run once
+    });
+</script>
+</body>
+</html>

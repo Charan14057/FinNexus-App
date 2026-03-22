@@ -1,0 +1,5 @@
+[
+  { "id": "scam@upi", "name": "Fake Electricity Board", "reason": "Phishing Reported" },
+  { "id": "9876543210@paytm", "name": "Fraudulent KYC", "reason": "Account Hijack Threat" },
+  { "id": "test@upi", "name": "Demo Scammer", "reason": "Security Alert Test" }
+]

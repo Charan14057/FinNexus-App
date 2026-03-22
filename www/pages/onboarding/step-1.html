@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FinNexus - Identity & Contact</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body { background-color: #0D0D0D; font-family: 'Inter Tight', sans-serif; color: white; overflow: hidden; }
+        .aurora-mesh {
+            background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.15), transparent 40%);
+            position: fixed; inset: 0; pointer-events: none;
+        }
+        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </style>
+</head>
+<body class="p-6 flex flex-col items-center min-h-screen">
+    <div class="aurora-mesh"></div>
+    
+    <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-12">
+        <button onclick="window.location.href='../../index.html'" class="flex items-center gap-2 text-gray-400 hover:text-white transition-all">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span class="text-sm font-bold uppercase tracking-widest">Back</span>
+        </button>
+        <h2 class="font-bold tracking-tight">FinNexus</h2>
+        <div class="w-10"></div>
+    </header>
+
+    <div class="relative z-10 w-full max-w-sm mb-10">
+        <div class="flex justify-between text-[10px] uppercase tracking-[0.2em] mb-2">
+            <span class="text-cyan-400 font-bold">Step 1 of 3</span>
+            <span class="text-gray-500">33% Complete</span>
+        </div>
+        <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+            <div class="h-full bg-gradient-to-r from-cyan-500 to-emerald-500 w-1/3 shadow-[0_0_15px_rgba(6,182,212,0.4)]"></div>
+        </div>
+    </div>
+
+    <main class="relative z-10 glass-card rounded-[32px] p-8 w-full max-w-sm space-y-6 shadow-2xl">
+        <div class="space-y-2">
+            <h1 class="text-3xl font-bold tracking-tight">Identity & Contact</h1>
+            <p class="text-gray-400 text-sm">Verify your details to secure the firewall.</p>
+        </div>
+
+        <div class="space-y-4">
+            <div class="space-y-1">
+                <label class="text-[10px] uppercase tracking-widest text-gray-500 ml-1 font-bold">First Name</label>
+                <div class="relative">
+                    <input id="name" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:border-cyan-500/50 outline-none transition-all" placeholder="e.g. Alexander" type="text"/>
+                    <div class="absolute right-4 top-4 text-gray-600">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] uppercase tracking-widest text-gray-500 ml-1 font-bold">Age</label>
+                <div class="relative">
+                    <input id="age" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:border-cyan-500/50 outline-none transition-all" placeholder="Enter age" type="number"/>
+                    <div class="absolute right-4 top-4 text-gray-600">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-[10px] uppercase tracking-widest text-gray-500 ml-1 font-bold">Mobile Number</label>
+                <div class="relative">
+                    <input id="phone-display" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:border-cyan-500/50 outline-none transition-all" placeholder="+91 00000 00000" type="tel"/>
+                    <div class="absolute right-4 top-4 text-gray-600">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button id="next-1" class="w-full py-5 rounded-2xl bg-[#10B981] font-bold text-lg text-white shadow-xl shadow-emerald-900/20 active:scale-95 transition-all flex items-center justify-center gap-3">
+            Next Step
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </button>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nameInput = document.getElementById('name');
+            const ageInput = document.getElementById('age');
+            const phoneInput = document.getElementById('phone-display');
+            const nextBtn = document.getElementById('next-1');
+
+            // 1. PRE-FILL the phone number from the login session
+            const storedMobile = localStorage.getItem('finnexus_temp_mobile');
+            if (storedMobile) {
+                phoneInput.value = '+91 ' + storedMobile;
+            }
+
+            // 2. Format phone number if they decide to edit it here
+            phoneInput.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/\D/g, '');
+                if (val.length > 10) val = val.slice(0, 10);
+                e.target.value = val.length > 0 ? '+91 ' + val : '';
+            });
+
+            // 3. Save all data
+            nextBtn.addEventListener('click', () => {
+                const rawPhone = phoneInput.value.replace(/\D/g, '').replace('91', '');
+                
+                if (nameInput.value.trim().length < 2) {
+                    alert("Please enter a valid Name.");
+                    return;
+                }
+                if (ageInput.value < 5 || ageInput.value > 120) {
+                    alert("Please enter a valid Age.");
+                    return;
+                }
+                if (rawPhone.length !== 10) {
+                    alert("Please enter a valid 10-digit Phone Number.");
+                    return;
+                }
+
+                // Update storage with the latest data
+                localStorage.setItem('finnexus_temp_name', nameInput.value);
+                localStorage.setItem('finnexus_temp_age', ageInput.value);
+                localStorage.setItem('finnexus_temp_mobile', rawPhone);
+
+                window.location.href = 'step-2.html';
+            });
+        });
+    </script>
+</body>
+</html>
