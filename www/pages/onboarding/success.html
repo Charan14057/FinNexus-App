@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FinNexus | Secure Settlement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <style>
+        .aurora-glow {
+            background: radial-gradient(circle at 50% 50%, rgba(61, 235, 145, 0.15) 0%, transparent 70%);
+            background-color: #0D0D0D;
+        }
+        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .hero-btn { background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); box-shadow: 0 10px 25px -5px rgba(61, 235, 145, 0.4); }
+        .check-glow { filter: drop-shadow(0 0 20px rgba(61, 235, 145, 0.5)); }
+    </style>
+</head>
+<body class="aurora-glow text-slate-100 min-h-screen flex flex-col items-center justify-center p-8">
+
+    <div class="w-full max-w-md text-center space-y-10">
+        <div class="flex flex-col items-center">
+            <div class="size-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
+                <span class="material-symbols-outlined text-6xl text-[#3deb91] check-glow" style="font-variation-settings: 'FILL' 1">check_circle</span>
+            </div>
+            <h1 class="text-4xl font-black tracking-tight">Payment Secure</h1>
+            <p class="text-slate-500 text-xs mt-2 uppercase tracking-[0.3em]">Transaction ID: <span id="txn-id" class="text-slate-300">#FNX-99284-SEC</span></p>
+        </div>
+
+        <div class="glass-panel rounded-[40px] p-8 space-y-8 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-6 opacity-10">
+                <span class="material-symbols-outlined text-6xl">receipt_long</span>
+            </div>
+            
+            <div class="text-left">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Paid To</p>
+                <h2 id="final-merchant" class="text-2xl font-bold">Blue Tokai Coffee</h2>
+            </div>
+
+            <div class="text-left">
+                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Amount</p>
+                <div class="flex items-baseline gap-2">
+                    <h3 id="final-amount" class="text-5xl font-black text-white">₹600.00</h3>
+                    <span id="final-cat" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold text-primary">Category: Food</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-3xl p-5 flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-xl">shield</span>
+                    <span class="text-xs font-bold text-slate-300">Defender Check</span>
+                </div>
+                <span class="text-[9px] font-black text-primary bg-primary/10 px-2 py-1 rounded-md uppercase tracking-tighter">100% Safe</span>
+            </div>
+            <div class="w-full h-[1px] bg-white/5"></div>
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-cyan-400 text-xl">account_balance_wallet</span>
+                    <span class="text-xs font-bold text-slate-300">Controller Status</span>
+                </div>
+                <span class="text-[10px] text-slate-500">Within Budget</span>
+            </div>
+        </div>
+
+        <div class="w-full pt-4 space-y-6">
+            <button onclick="finalizeAndHome()" class="hero-btn w-full py-5 rounded-3xl text-black font-black text-lg tracking-widest uppercase active:scale-95 transition-all">
+                Back to Home
+            </button>
+            <p class="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] cursor-pointer hover:text-slate-400 transition-colors">Download Receipt</p>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const p = JSON.parse(sessionStorage.getItem('pending_payment'));
+        if (p) {
+            document.getElementById('final-amount').textContent = `₹${parseFloat(p.amount).toLocaleString('en-IN')}`;
+            document.getElementById('final-merchant').textContent = p.merchantName;
+            document.getElementById('final-cat').textContent = `Category: ${p.category}`;
+            document.getElementById('txn-id').textContent = '#FNX-' + Math.floor(100000 + Math.random() * 900000) + '-SEC';
+        }
+    });
+
+    function finalizeAndHome() {
+        const pending = JSON.parse(sessionStorage.getItem('pending_payment'));
+        if (pending) {
+            // 1. Live Wallet Subtraction
+            let currentBal = parseFloat(localStorage.getItem('finnexus_balance') || 0);
+            localStorage.setItem('finnexus_balance', (currentBal - parseFloat(pending.amount)).toFixed(2));
+
+            // 2. Monthly Spending Update (for live budget checking)
+            let catKey = `budget_${pending.category.toLowerCase()}_spent`;
+            let currentSpent = parseFloat(localStorage.getItem(catKey) || 0);
+            localStorage.setItem(catKey, (currentSpent + parseFloat(pending.amount)).toFixed(2));
+
+            // 3. History Entry
+            let history = JSON.parse(localStorage.getItem('finnexus_history') || '[]');
+            history.unshift({
+                merchant: pending.merchantName,
+                amount: pending.amount,
+                category: pending.category,
+                date: "Today, " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isSafe: true
+            });
+            localStorage.setItem('finnexus_history', JSON.stringify(history));
+        }
+        sessionStorage.removeItem('pending_payment');
+        window.location.href = '../../home.html';
+    }
+</script>
+</body>
+</html>
