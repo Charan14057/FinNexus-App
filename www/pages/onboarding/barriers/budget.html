@@ -46,7 +46,7 @@
         </div>
 
         <section class="mt-auto space-y-4 pt-10">
-            <button onclick="approve()" class="glossy-button w-full py-5 rounded-2xl text-black font-black text-lg active:scale-95 transition-all uppercase tracking-widest">
+            <button id="auth-btn" onclick="approve()" class="glossy-button w-full py-5 rounded-2xl text-black font-black text-lg active:scale-95 transition-all uppercase tracking-widest">
                 Authorize Bridge
             </button>
             <button onclick="cancel()" class="glass-card w-full py-5 rounded-2xl text-zinc-400 font-bold uppercase text-xs tracking-widest active:scale-95 transition-all">
@@ -61,18 +61,44 @@
             if (p) {
                 const total = parseFloat(p.amount);
                 const overage = parseFloat(p.overage);
-                const budgetPart = total - overage;
+                const budgetPart = Math.max(0, total - overage);
 
-                document.getElementById('breakup-requested').textContent = `₹${total.toLocaleString('en-IN')}`;
-                document.getElementById('breakup-budget').textContent = `₹${budgetPart.toLocaleString('en-IN')}`;
-                document.getElementById('breakup-savings').textContent = `₹${overage.toLocaleString('en-IN')}`;
-                document.getElementById('summary-overage').textContent = `₹${overage.toLocaleString('en-IN')}`;
+                document.getElementById('breakup-requested').textContent = `₹${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+                document.getElementById('breakup-budget').textContent = `₹${budgetPart.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+                document.getElementById('breakup-savings').textContent = `₹${overage.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+                document.getElementById('summary-overage').textContent = `₹${overage.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
                 document.getElementById('target-cat').textContent = p.category;
             }
         });
 
-        function approve() { window.location.href = '../success.html'; }
-        function cancel() { window.location.href = '../../../home.html'; }
+        function approve() {
+            const p = JSON.parse(sessionStorage.getItem('pending_payment'));
+            const btn = document.getElementById('auth-btn');
+
+            if (p && p.deepLink) {
+                // 1. VISUAL FEEDBACK
+                btn.textContent = "Opening UPI App...";
+                btn.classList.add('opacity-50', 'pointer-events-none');
+
+                // 2. TRIGGER REAL UPI APP
+                window.location.href = p.deepLink;
+
+                // 3. HANDOFF TO SUCCESS
+                // We wait 1.5 seconds to give the native app time to launch, 
+                // then we move this browser tab to success.html
+                setTimeout(() => {
+                    window.location.href = '../success.html';
+                }, 1500);
+            } else {
+                // Fallback for demo mode
+                window.location.href = '../success.html';
+            }
+        }
+
+        function cancel() {
+            sessionStorage.removeItem('pending_payment');
+            window.location.href = '../../../home.html';
+        }
     </script>
 </body>
 </html>

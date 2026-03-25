@@ -1,157 +1,203 @@
 <!DOCTYPE html>
 <html class="dark" lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>FinNexus - Safety Logs</title>
+    <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>FinNexus | Safety Logs</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "surface": "#0e0e0e",
-              "primary": "#86fea7",
-              "error": "#ff716c",
-              "surface-container-low": "#131313",
-              "surface-container-high": "#201f1f",
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3deb91",
+                        "background-dark": "#0D0D0D",
+                        "obsidian": "#0D0D0D",
+                        "error-red": "#ff4d4d",
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
             },
-          },
-        },
-      }
+        }
     </script>
     <style>
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .aurora-bg {
-            background: radial-gradient(circle at 0% 0%, rgba(134, 254, 167, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 100% 100%, rgba(0, 251, 251, 0.1) 0%, transparent 40%);
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(61, 235, 145, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(0, 128, 128, 0.1) 0%, transparent 40%),
+                linear-gradient(180deg, #0D0D0D 0%, #050505 100%);
+            min-height: 100vh;
         }
-        .glass-pill { background: rgba(38, 38, 38, 0.4); backdrop-filter: blur(20px); }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .filter-pill { transition: all 0.3s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* NAV STYLING (Synced with Home) */
+        .nav-dock { background: rgba(13, 13, 13, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        .nav-item-active { color: #3deb91 !important; filter: drop-shadow(0 0 8px rgba(61, 235, 145, 0.5)); }
+        .nav-item-active::after {
+            content: ""; position: absolute; bottom: -10px; width: 4px; height: 4px;
+            background: #3deb91; border-radius: 50%; box-shadow: 0 0 10px #3deb91;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .animate-log { animation: slideIn 0.4s ease-out forwards; }
     </style>
 </head>
-<body class="bg-surface text-white font-body min-h-screen aurora-bg pb-32">
+<body class="aurora-bg font-display text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
 
-<header class="fixed top-0 w-full z-50 bg-stone-950/40 backdrop-blur-xl flex items-center justify-between px-6 py-4">
-    <div class="flex items-center gap-3">
-        <span class="material-symbols-outlined text-primary">history</span>
-        <h1 class="font-['Inter_Tight'] text-xl font-bold text-primary">History</h1>
-    </div>
-</header>
-
-<main class="pt-24 px-6 max-w-lg mx-auto">
-    <div class="mb-8">
-        <p class="text-slate-500 text-sm tracking-wide">Your wallet firewall is active and monitoring.</p>
-    </div>
-
-    <div class="flex gap-3 overflow-x-auto pb-6 no-scrollbar" id="filter-bar">
-        <button onclick="filterHistory('All', this)" class="filter-pill glass-pill px-6 py-2.5 rounded-full text-primary border border-primary/30 text-sm font-bold shadow-[0_0_15px_rgba(134,254,167,0.2)] whitespace-nowrap">All</button>
-        <button onclick="filterHistory('Food', this)" class="filter-pill glass-pill px-6 py-2.5 rounded-full text-slate-500 border border-white/10 text-sm font-medium whitespace-nowrap">Food</button>
-        <button onclick="filterHistory('Fuel', this)" class="filter-pill glass-pill px-6 py-2.5 rounded-full text-slate-500 border border-white/10 text-sm font-medium whitespace-nowrap">Fuel</button>
-        <button onclick="filterHistory('Shopping', this)" class="filter-pill glass-pill px-6 py-2.5 rounded-full text-slate-500 border border-white/10 text-sm font-medium whitespace-nowrap">Shopping</button>
-        <button onclick="filterHistory('Blocked', this)" class="filter-pill glass-pill px-6 py-2.5 rounded-full text-slate-500 border border-white/10 text-sm font-medium whitespace-nowrap">Blocked</button>
-    </div>
-
-    <div class="space-y-4" id="log-container">
+    <header class="flex items-center justify-between px-8 pt-10 pb-6 relative z-10">
+        <div class="flex flex-col">
+            <span class="text-[10px] font-black text-primary tracking-[0.3em] uppercase opacity-60 italic">Node Monitoring</span>
+            <h1 class="text-3xl font-black tracking-tighter text-white">Safety Logs</h1>
         </div>
-</main>
+        <button onclick="clearHistory()" class="size-10 rounded-full glass-card flex items-center justify-center active:scale-75 transition-transform">
+            <span class="material-symbols-outlined text-slate-500 text-lg">delete_sweep</span>
+        </button>
+    </header>
 
-<nav class="fixed bottom-6 w-full z-50 flex justify-center px-4">
-    <div class="bg-[#131313]/80 backdrop-blur-2xl w-full max-w-xs rounded-2xl border border-white/5 flex justify-around items-center py-2 px-2 shadow-2xl">
-        <a class="p-3 text-stone-500" href="home.html"><span class="material-symbols-outlined">home</span></a>
-        <a class="bg-primary/20 text-primary rounded-xl p-3 shadow-[0_0_15px_rgba(134,254,167,0.4)]" href="history.html">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
-        </a>
-        <a class="p-3 text-stone-500" href="savings.html"><span class="material-symbols-outlined">savings</span></a>
+    <main class="flex-1 px-6 relative z-10 pb-40">
+        <div class="mb-8 px-2 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="size-2 bg-primary rounded-full animate-ping"></span>
+                <span id="status-text" class="text-[9px] font-black uppercase tracking-widest text-slate-400">Firewall Secure</span>
+            </div>
+            <span id="log-count" class="text-[9px] font-bold text-slate-600 bg-white/5 px-2 py-1 rounded-md uppercase">0 Entries</span>
+        </div>
+
+        <div class="flex gap-2 overflow-x-auto pb-8 no-scrollbar" id="filter-bar">
+            <button onclick="filterHistory('All', this)" class="filter-pill flex-none px-5 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest shadow-[0_0_15px_rgba(61,235,145,0.1)]">All</button>
+            <button onclick="filterHistory('Food', this)" class="filter-pill flex-none px-5 py-2 rounded-full border border-white/5 bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest">Food</button>
+            <button onclick="filterHistory('Fuel', this)" class="filter-pill flex-none px-5 py-2 rounded-full border border-white/5 bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest">Fuel</button>
+            <button onclick="filterHistory('Blocked', this)" class="filter-pill flex-none px-5 py-2 rounded-full border border-white/5 bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest">Blocked</button>
+        </div>
+
+        <div class="space-y-3" id="log-container">
+            </div>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 p-6 z-50">
+        <nav class="nav-dock max-w-sm mx-auto rounded-full h-20 px-8 flex items-center justify-between shadow-2xl">
+            <a href="history.html" class="nav-item-active flex flex-col items-center gap-1 text-primary relative active:scale-90">
+                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">schedule</span>
+                <span class="text-[8px] font-black uppercase tracking-widest">Logs</span>
+            </a>
+            
+            <a href="pay.html" class="flex flex-col items-center -mt-14 group">
+                <div class="size-16 rounded-full bg-primary flex items-center justify-center text-obsidian shadow-[0_0_30px_rgba(61,235,145,0.5)] active:scale-90 transition-all border-4 border-[#0D0D0D]">
+                    <span class="material-symbols-outlined text-3xl font-black">add</span>
+                </div>
+                <span class="text-[8px] font-black text-primary uppercase tracking-[0.2em] mt-2">Pay</span>
+            </a>
+
+            <a href="home.html" class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-all active:scale-90">
+                <span class="material-symbols-outlined text-2xl">home</span>
+                <span class="text-[8px] font-black uppercase tracking-widest">Home</span>
+            </a>
+
+            <a href="wallet.html" class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-all active:scale-90">
+                <span class="material-symbols-outlined text-2xl">account_balance</span>
+                <span class="text-[8px] font-black uppercase tracking-widest">Vault</span>
+            </a>
+        </nav>
     </div>
-</nav>
 
 <script>
-    // ICON MAPPING
     const icons = {
         'Food': 'restaurant',
         'Fuel': 'local_gas_station',
-        'Shopping': 'shopping_bag',
         'Travel': 'commute',
-        'Rent': 'home_work'
+        'General': 'toll'
     };
 
     function renderHistory(filter = 'All') {
         const history = JSON.parse(localStorage.getItem('finnexus_history') || '[]');
         const container = document.getElementById('log-container');
         container.innerHTML = '';
-
+        
         const filtered = filter === 'All' ? history : history.filter(t => t.category === filter || (filter === 'Blocked' && !t.isSafe));
+        document.getElementById('log-count').textContent = `${filtered.length} Entries`;
 
         if (filtered.length === 0) {
-            container.innerHTML = `<p class="text-center text-slate-600 mt-20 text-sm">No activity recorded for ${filter}.</p>`;
+            container.innerHTML = `
+                <div class="py-20 text-center flex flex-col items-center opacity-30">
+                    <span class="material-symbols-outlined text-5xl mb-2">analytics</span>
+                    <p class="text-[10px] font-black uppercase tracking-widest">No matching logs found</p>
+                </div>`;
             return;
         }
 
-        filtered.forEach(txn => {
+        filtered.forEach((txn, index) => {
             if (txn.isSafe) {
-                // NORMAL TRANSACTION UI
-                const item = `
-                <div class="bg-surface-container-low p-4 rounded-xl flex items-center justify-between transition-all active:scale-95">
+                container.innerHTML += `
+                <div class="glass-card p-4 rounded-[24px] flex items-center justify-between active:scale-[0.98] animate-log" style="animation-delay: ${index * 0.05}s">
                     <div class="flex items-center gap-4">
-                        <div class="relative">
-                            <div class="w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center border border-white/5">
-                                <span class="material-symbols-outlined text-primary text-3xl">${icons[txn.category] || 'payments'}</span>
+                        <div class="relative size-12 flex-shrink-0">
+                            <div class="inset-0 absolute rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-xl">${icons[txn.category] || 'payments'}</span>
                             </div>
-                            <div class="absolute -bottom-1 -right-1 bg-surface-container-high rounded-full p-1 border border-primary/20">
-                                <span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                            <div class="absolute -bottom-1 -right-1 bg-background-dark rounded-full p-0.5">
+                                <span class="material-symbols-outlined text-primary text-[12px]" style="font-variation-settings: 'FILL' 1">verified_user</span>
                             </div>
                         </div>
                         <div>
-                            <h4 class="font-bold text-white">${txn.merchant}</h4>
-                            <p class="text-slate-500 text-[10px] mt-0.5 uppercase tracking-widest">${txn.date}, ${txn.time}</p>
+                            <h4 class="text-xs font-black text-white truncate max-w-[120px] uppercase tracking-tight">${txn.merchant}</h4>
+                            <p class="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">${txn.date} • ${txn.time || 'NODE SECURE'}</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-white font-bold text-lg">₹${txn.amount}</span>
+                        <p class="text-sm font-black text-white tracking-tighter">₹${parseFloat(txn.amount).toLocaleString('en-IN')}</p>
+                        <span class="text-[8px] font-black text-primary uppercase opacity-60">Verified</span>
                     </div>
                 </div>`;
-                container.insertAdjacentHTML('beforeend', item);
             } else {
-                // BLOCKED TRANSACTION UI (RED)
-                const item = `
-                <div class="bg-red-500/10 p-4 rounded-xl flex items-center justify-between border border-red-500/20 shadow-lg">
+                container.innerHTML += `
+                <div class="glass-card p-4 rounded-[24px] flex items-center justify-between border-error-red/20 animate-log">
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center border border-red-500/30">
-                            <span class="material-symbols-outlined text-red-400 text-3xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+                        <div class="size-12 rounded-full bg-error-red/10 border border-error-red/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-error-red text-xl" style="font-variation-settings: 'FILL' 1">block</span>
                         </div>
                         <div>
-                            <h4 class="font-bold text-red-400">SCAM BLOCKED</h4>
-                            <p class="text-slate-500 text-[10px] mt-0.5 uppercase tracking-widest">${txn.date}</p>
+                            <h4 class="text-xs font-black text-error-red uppercase tracking-tight">Threat Intercepted</h4>
+                            <p class="text-[8px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">${txn.date}</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-slate-500 line-through block text-sm">₹${txn.amount}</span>
-                        <span class="text-primary text-[10px] uppercase font-black tracking-widest">SAVED</span>
+                        <p class="text-sm font-black text-slate-500 line-through tracking-tighter">₹${txn.amount}</p>
+                        <span class="text-[8px] font-black text-primary uppercase">Funds Protected</span>
                     </div>
                 </div>`;
-                container.insertAdjacentHTML('beforeend', item);
             }
         });
+
+        // Update status text
+        const hasBlocked = history.some(t => !t.isSafe);
+        document.getElementById('status-text').textContent = hasBlocked ? 'Interceptions Recorded' : 'Firewall Secure';
+        if(hasBlocked) document.getElementById('status-text').classList.replace('text-slate-400', 'text-error-red');
     }
 
     function filterHistory(cat, btn) {
-        // Update UI Pills
         document.querySelectorAll('.filter-pill').forEach(b => {
-            b.classList.remove('text-primary', 'border-primary/30', 'shadow-[0_0_15px_rgba(134,254,167,0.2)]', 'font-bold');
-            b.classList.add('text-slate-500', 'border-white/10', 'font-medium');
+            b.className = "filter-pill flex-none px-5 py-2 rounded-full border border-white/5 bg-white/5 text-slate-500 text-[10px] font-black uppercase tracking-widest";
         });
-        btn.classList.replace('text-slate-500', 'text-primary');
-        btn.classList.replace('border-white/10', 'border-primary/30');
-        btn.classList.add('font-bold', 'shadow-[0_0_15px_rgba(134,254,167,0.2)]');
-
+        btn.className = "filter-pill flex-none px-5 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest shadow-[0_0_15px_rgba(61,235,145,0.1)]";
         renderHistory(cat);
     }
 
-    // Initialize
+    function clearHistory() {
+        if(confirm("Purge all monitoring logs? This action is permanent.")) {
+            localStorage.setItem('finnexus_history', '[]');
+            renderHistory();
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', () => renderHistory('All'));
 </script>
 </body>

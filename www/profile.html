@@ -3,133 +3,220 @@
 <head>
     <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>FinNexus | Profile Vault</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Manrope:wght@800&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    
-    <style>
-        :root { --primary: #6ee591; --bg: #0D0D0D; }
-        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-        
-        /* CATCHY ANIMATIONS */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { 
+                        "primary": "#3deb91", 
+                        "background-dark": "#0D0D0D", 
+                        "obsidian": "#0D0D0D",
+                        "error-red": "#ff4d4d" 
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
         }
-        .animate-rise { animation: fadeInUp 0.6s ease-out forwards; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    </script>
+    <style>
+        .aurora-bg {
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(61, 235, 145, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 0%, rgba(0, 242, 255, 0.1) 0%, transparent 40%),
+                linear-gradient(180deg, #0D0D0D 0%, #050505 100%);
+            min-height: 100vh;
+        }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255, 255, 255, 0.06); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         
-        /* PREVENT GHOST TEXT FOR ICONS */
-        .material-symbols-outlined { display: inline-block; width: 24px; height: 24px; overflow: hidden; }
+        /* NAV STYLING (Synced with Home) */
+        .nav-dock { background: rgba(13, 13, 13, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        .nav-item-active { color: #3deb91 !important; filter: drop-shadow(0 0 8px rgba(61, 235, 145, 0.5)); }
+        .nav-item-active::after {
+            content: ""; position: absolute; bottom: -10px; width: 4px; height: 4px;
+            background: #3deb91; border-radius: 50%; box-shadow: 0 0 10px #3deb91;
+        }
+
+        @keyframes pulse-border { 0% { border-color: rgba(61, 235, 145, 0.2); } 50% { border-color: rgba(61, 235, 145, 0.6); } 100% { border-color: rgba(61, 235, 145, 0.2); } }
+        .animate-shield { animation: pulse-border 3s infinite ease-in-out; }
     </style>
 </head>
-<body class="p-6 pt-20 pb-32">
+<body class="aurora-bg font-display text-slate-100 p-6 pb-40">
 
-    <header class="fixed top-0 left-0 w-full p-6 bg-[#0D0D0D]/80 backdrop-blur-xl z-50 flex items-center justify-between border-b border-white/5">
-        <button onclick="window.location.href='home.html'" class="text-primary active:scale-75 transition-transform">
-            <span class="material-symbols-outlined">arrow_back</span>
+    <header class="flex items-center justify-between mb-10 pt-4">
+        <button onclick="window.location.href='home.html'" class="size-11 flex items-center justify-center rounded-2xl glass-card active:scale-75 transition-transform">
+            <span class="material-symbols-outlined text-white">arrow_back</span>
         </button>
-        <h1 class="text-sm font-black uppercase tracking-[0.3em] text-primary">Security Profile</h1>
-        <div class="w-6"></div>
+        <h1 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary italic">Identity Vault</h1>
+        <div class="size-11 opacity-0"></div>
     </header>
 
-    <section class="flex flex-col items-center py-8 animate-rise" style="animation-delay: 0.1s">
-        <div class="relative w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-primary to-cyan-400 mb-4">
-            <div class="w-full h-full rounded-full bg-surface bg-[#1a1a1a] flex items-center justify-center">
-                <span class="material-symbols-outlined text-5xl text-slate-500" style="font-variation-settings: 'FILL' 1">account_circle</span>
+    <section class="flex flex-col items-center mb-10">
+        <div class="relative group">
+            <div class="size-32 rounded-full p-1 bg-gradient-to-tr from-primary to-cyan-400 animate-shield">
+                <div class="w-full h-full rounded-full bg-[#1a1a1a] flex items-center justify-center overflow-hidden border-4 border-obsidian">
+                    <span class="material-symbols-outlined text-6xl text-slate-600" style="font-variation-settings: 'FILL' 1">account_circle</span>
+                </div>
+            </div>
+            <div class="absolute bottom-1 right-1 size-8 bg-primary rounded-full border-4 border-obsidian flex items-center justify-center shadow-lg">
+                <span class="material-symbols-outlined text-black text-sm font-black">verified</span>
             </div>
         </div>
-        <h2 id="p-name-head" class="text-3xl font-black tracking-tighter">User Name</h2>
-        <p class="text-primary text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Shield Level: Elite</p>
+        <h2 id="p-name-head" class="text-3xl font-black tracking-tighter mt-6">FinNexus User</h2>
+        <div class="mt-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full flex items-center gap-2">
+            <span class="size-1.5 bg-primary rounded-full animate-pulse"></span>
+            <span class="text-[9px] font-black text-primary uppercase tracking-widest">Protocol: Elite Level</span>
+        </div>
     </section>
 
-    <div class="space-y-4 animate-rise" style="animation-delay: 0.2s">
-        
-        <div class="glass-card p-5 rounded-3xl flex justify-between items-center group active:bg-white/5 transition-colors">
+    <main class="space-y-4">
+        <div class="glass-card p-5 rounded-[28px] flex justify-between items-center group active:bg-white/5">
             <div class="flex items-center gap-4">
-                <div class="size-10 rounded-2xl bg-white/5 flex items-center justify-center text-cyan-400"><span class="material-symbols-outlined">person</span></div>
+                <div class="size-12 rounded-2xl bg-white/5 flex items-center justify-center text-cyan-400">
+                    <span class="material-symbols-outlined">fingerprint</span>
+                </div>
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Full Name</p>
-                    <p id="p-name" class="font-bold text-white">Loading...</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Master Identity</p>
+                    <p id="p-name" class="font-black text-white text-base tracking-tight italic">Loading...</p>
                 </div>
             </div>
-            <button onclick="editField('name')" class="text-primary opacity-40 group-hover:opacity-100 transition-opacity">
-                <span class="material-symbols-outlined">edit</span>
+            <button onclick="editField('name')" class="size-10 rounded-full flex items-center justify-center text-primary/40 group-hover:text-primary transition-all">
+                <span class="material-symbols-outlined text-xl">edit_square</span>
             </button>
         </div>
 
-        <div class="glass-card p-5 rounded-3xl flex justify-between items-center group active:bg-white/5 transition-colors">
+        <div class="glass-card p-5 rounded-[28px] flex justify-between items-center group active:bg-white/5">
             <div class="flex items-center gap-4">
-                <div class="size-10 rounded-2xl bg-white/5 flex items-center justify-center text-primary"><span class="material-symbols-outlined">call</span></div>
+                <div class="size-12 rounded-2xl bg-white/5 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined">hub</span>
+                </div>
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Phone Number</p>
-                    <p id="p-phone" class="font-bold text-white">Loading...</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Comms Node</p>
+                    <p id="p-phone" class="font-black text-white text-base tracking-tight">+91 0000000000</p>
                 </div>
             </div>
-            <button onclick="editField('mobile')" class="text-primary opacity-40 group-hover:opacity-100 transition-opacity">
-                <span class="material-symbols-outlined">edit</span>
+            <button onclick="editField('mobile')" class="size-10 rounded-full flex items-center justify-center text-primary/40 group-hover:text-primary transition-all">
+                <span class="material-symbols-outlined text-xl">edit_square</span>
             </button>
         </div>
 
-        <div class="glass-card p-5 rounded-3xl flex justify-between items-center">
+        <div class="glass-card p-5 rounded-[28px] flex justify-between items-center border-l-4 border-l-primary/30">
             <div class="flex items-center gap-4">
-                <div class="size-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary"><span class="material-symbols-outlined">account_balance_wallet</span></div>
+                <div class="size-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-[0_0_15px_rgba(61,235,145,0.2)]">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">account_balance_wallet</span>
+                </div>
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Preferred Gateway</p>
-                    <p id="p-upi" class="font-bold text-white italic">G-Pay</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Primary Gateway</p>
+                    <p id="p-upi" class="font-black text-white text-base italic uppercase tracking-tighter">G-Pay</p>
                 </div>
             </div>
-            <button onclick="toggleUPI()" class="px-4 py-2 bg-primary/10 border border-primary/20 text-primary text-[10px] font-black rounded-xl uppercase tracking-widest">Switch</button>
+            <button onclick="cycleUPI()" class="px-5 py-2.5 bg-primary text-black text-[9px] font-black rounded-xl uppercase tracking-widest shadow-lg active:scale-90 transition-all">Switch</button>
         </div>
 
-        <button onclick="terminate()" class="w-full py-5 rounded-3xl bg-red-500/5 border border-red-500/20 text-red-500 font-black uppercase text-xs tracking-widest mt-8 active:scale-95 transition-all">
+        <div class="pt-6 px-2 flex justify-between items-center opacity-40">
+            <div class="flex flex-col">
+                <p class="text-[8px] font-black uppercase text-slate-500 tracking-tighter">Node ID</p>
+                <p id="node-id" class="text-[9px] font-mono text-white">#FX-8892</p>
+            </div>
+            <div class="text-right flex flex-col">
+                <p class="text-[8px] font-black uppercase text-slate-500 tracking-tighter">Protection Active</p>
+                <p id="active-since" class="text-[9px] font-bold text-white uppercase">Since Mar 2026</p>
+            </div>
+        </div>
+
+        <button onclick="terminate()" class="w-full py-5 rounded-3xl bg-error-red/5 border border-error-red/20 text-error-red font-black uppercase text-[10px] tracking-[0.3em] mt-8 active:scale-95 active:bg-error-red/10 transition-all">
             Terminate Secure Session
         </button>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 p-6 z-50">
+        <nav class="nav-dock max-w-sm mx-auto rounded-full h-20 px-8 flex items-center justify-between shadow-2xl">
+            <a href="history.html" class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-all active:scale-90">
+                <span class="material-symbols-outlined text-2xl">schedule</span>
+                <span class="text-[8px] font-black uppercase tracking-widest">Logs</span>
+            </a>
+            
+            <a href="pay.html" class="flex flex-col items-center -mt-14 group">
+                <div class="size-16 rounded-full bg-primary flex items-center justify-center text-obsidian shadow-[0_0_30px_rgba(61,235,145,0.5)] active:scale-90 transition-all border-4 border-[#0D0D0D]">
+                    <span class="material-symbols-outlined text-3xl font-black">add</span>
+                </div>
+                <span class="text-[8px] font-black text-primary uppercase tracking-[0.2em] mt-2">Pay</span>
+            </a>
+
+            <a href="home.html" class="flex flex-col items-center gap-1 text-slate-500 hover:text-primary transition-all active:scale-90">
+                <span class="material-symbols-outlined text-2xl">home</span>
+                <span class="text-[8px] font-black uppercase tracking-widest">Home</span>
+            </a>
+
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-primary relative active:scale-90 nav-item-active">
+                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">person</span>
+                <span class="text-[8px] font-black uppercase tracking-widest">Profile</span>
+            </a>
+        </nav>
     </div>
 
-    <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[85%] glass-card rounded-full p-2 flex justify-around items-center z-50">
-        <a href="history.html" class="p-3 text-slate-500"><span class="material-symbols-outlined">history</span></a>
-        <a href="home.html" class="p-3 text-slate-500"><span class="material-symbols-outlined">home</span></a>
-        <a href="profile.html" class="p-3 text-primary"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">person</span></a>
-    </nav>
+<script>
+    const mobile = localStorage.getItem('finnexus_temp_mobile');
+    const profileKey = `finnexus_profile_${mobile}`;
+    let profile = JSON.parse(localStorage.getItem(profileKey));
 
-    <script>
-        const mobile = localStorage.getItem('finnexus_temp_mobile');
-        let profile = JSON.parse(localStorage.getItem(`finnexus_profile_${mobile}`));
-
-        function loadData() {
-            if(!profile) return window.location.href = 'index.html';
-            document.getElementById('p-name-head').innerText = profile.name;
-            document.getElementById('p-name').innerText = profile.name;
-            document.getElementById('p-phone').innerText = `+91 ${profile.mobile}`;
-            document.getElementById('p-upi').innerText = profile.preferred_upi || "G-Pay";
+    function loadData() {
+        if(!profile) return window.location.href = 'index.html';
+        
+        document.getElementById('p-name-head').innerText = profile.name;
+        document.getElementById('p-name').innerText = profile.name;
+        document.getElementById('p-phone').innerText = `+91 ${profile.mobile}`;
+        document.getElementById('p-upi').innerText = profile.preferred_upi || "Google Pay";
+        
+        // Dynamic Node ID based on phone
+        document.getElementById('node-id').innerText = `#FX-${mobile.slice(-4)}`;
+        
+        // Joined Date
+        if(profile.joinedDate) {
+            const date = new Date(profile.joinedDate);
+            const month = date.toLocaleString('default', { month: 'short' });
+            document.getElementById('active-since').innerText = `Since ${month} ${date.getFullYear()}`;
         }
+    }
 
-        function editField(field) {
-            const newVal = prompt(`Enter new ${field}:`, profile[field]);
-            if(newVal) {
-                profile[field] = newVal;
-                localStorage.setItem(`finnexus_profile_${mobile}`, JSON.stringify(profile));
-                loadData();
-            }
-        }
-
-        function toggleUPI() {
-            profile.preferred_upi = (profile.preferred_upi === "G-Pay") ? "PhonePe" : "G-Pay";
-            localStorage.setItem(`finnexus_profile_${mobile}`, JSON.stringify(profile));
-            alert(`Payment gateway switched to ${profile.preferred_upi}`);
+    function editField(field) {
+        const labels = { name: 'Identity Name', mobile: 'Mobile Number' };
+        const newVal = prompt(`Update ${labels[field]}:`, profile[field]);
+        if(newVal && newVal.trim().length > 0) {
+            profile[field] = newVal;
+            localStorage.setItem(profileKey, JSON.stringify(profile));
+            // If phone was changed, we need to update the key too
+            if(field === 'mobile') localStorage.setItem('finnexus_temp_mobile', newVal);
             loadData();
         }
+    }
 
-        function terminate() {
-            if(confirm("Wipe session data?")) {
-                localStorage.removeItem('finnexus_temp_mobile');
-                window.location.href = 'index.html';
-            }
+    function cycleUPI() {
+        const gateways = ["Google Pay", "PhonePe", "Paytm", "Amazon Pay"];
+        let currentIndex = gateways.indexOf(profile.preferred_upi || "Google Pay");
+        let nextIndex = (currentIndex + 1) % gateways.length;
+        
+        profile.preferred_upi = gateways[nextIndex];
+        localStorage.setItem(profileKey, JSON.stringify(profile));
+        loadData();
+    }
+
+    function terminate() {
+        if(confirm("DEAUTHORIZE DEVICE? This will wipe your active session and return you to the login protocol.")) {
+            localStorage.removeItem('finnexus_temp_mobile');
+            window.location.href = 'index.html';
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', loadData);
-    </script>
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
 </body>
 </html>

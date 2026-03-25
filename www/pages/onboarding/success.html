@@ -3,72 +3,123 @@
 <head>
     <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>FinNexus | Secure Settlement</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <style>
-        .aurora-glow {
-            background: radial-gradient(circle at 50% 50%, rgba(61, 235, 145, 0.15) 0%, transparent 70%);
-            background-color: #0D0D0D;
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { 
+                        "primary": "#3deb91", 
+                        "background-dark": "#0D0D0D", 
+                        "obsidian": "#0D0D0D",
+                        "cyan-accent": "#00f2ff" 
+                    },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                },
+            },
         }
-        .glass-panel { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .hero-btn { background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); box-shadow: 0 10px 25px -5px rgba(61, 235, 145, 0.4); }
-        .check-glow { filter: drop-shadow(0 0 20px rgba(61, 235, 145, 0.5)); }
+    </script>
+    <style>
+        .aurora-bg {
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(61, 235, 145, 0.12) 0%, transparent 70%),
+                linear-gradient(180deg, #0D0D0D 0%, #050505 100%);
+        }
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255, 255, 255, 0.06); 
+        }
+        .hero-btn { 
+            background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); 
+            box-shadow: 0 15px 35px -10px rgba(61, 235, 145, 0.4); 
+        }
+        
+        /* SUCCESS ANIMATIONS */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-success { animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        
+        .check-glow { 
+            filter: drop-shadow(0 0 20px rgba(61, 235, 145, 0.6)); 
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 15px rgba(61, 235, 145, 0.4)); }
+            50% { filter: drop-shadow(0 0 30px rgba(61, 235, 145, 0.8)); }
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-content { opacity: 0; animation: slideUp 0.6s 0.3s ease-out forwards; }
     </style>
 </head>
-<body class="aurora-glow text-slate-100 min-h-screen flex flex-col items-center justify-center p-8">
+<body class="aurora-bg font-display text-slate-100 min-h-screen flex flex-col items-center justify-center p-8 overflow-hidden">
 
-    <div class="w-full max-w-md text-center space-y-10">
-        <div class="flex flex-col items-center">
-            <div class="size-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6">
-                <span class="material-symbols-outlined text-6xl text-[#3deb91] check-glow" style="font-variation-settings: 'FILL' 1">check_circle</span>
+    <div class="w-full max-w-sm text-center space-y-10">
+        
+        <div class="flex flex-col items-center animate-success">
+            <div class="size-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 relative">
+                <div class="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping"></div>
+                <span class="material-symbols-outlined text-6xl text-primary check-glow" style="font-variation-settings: 'FILL' 1">check_circle</span>
             </div>
-            <h1 class="text-4xl font-black tracking-tight">Payment Secure</h1>
-            <p class="text-slate-500 text-xs mt-2 uppercase tracking-[0.3em]">Transaction ID: <span id="txn-id" class="text-slate-300">#FNX-99284-SEC</span></p>
+            <h1 class="text-3xl font-black tracking-tight uppercase italic">Protocol Secured</h1>
+            <p class="text-slate-500 text-[10px] mt-2 uppercase tracking-[0.4em] font-bold">Node: <span id="txn-id" class="text-primary opacity-80">#FX-882-SEC</span></p>
         </div>
 
-        <div class="glass-panel rounded-[40px] p-8 space-y-8 relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-6 opacity-10">
-                <span class="material-symbols-outlined text-6xl">receipt_long</span>
+        <div class="glass-card rounded-[40px] p-8 space-y-8 relative overflow-hidden animate-content">
+            <div class="absolute top-0 right-0 p-8 opacity-5">
+                <span class="material-symbols-outlined text-8xl">verified</span>
             </div>
             
-            <div class="text-left">
-                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Paid To</p>
-                <h2 id="final-merchant" class="text-2xl font-bold">Blue Tokai Coffee</h2>
+            <div class="text-left relative z-10">
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Bridge Destination</p>
+                <h2 id="final-merchant" class="text-2xl font-black tracking-tight text-white uppercase italic">Blue Tokai Coffee</h2>
             </div>
 
-            <div class="text-left">
-                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Amount</p>
+            <div class="text-left relative z-10">
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Volume Released</p>
                 <div class="flex items-baseline gap-2">
-                    <h3 id="final-amount" class="text-5xl font-black text-white">₹600.00</h3>
-                    <span id="final-cat" class="bg-white/5 border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold text-primary">Category: Food</span>
+                    <h3 id="final-amount" class="text-5xl font-black text-white tracking-tighter">₹0.00</h3>
+                </div>
+                <div class="mt-4 flex items-center gap-2">
+                    <span id="final-cat-pill" class="bg-primary/10 border border-primary/20 px-3 py-1 rounded-full text-[9px] font-black text-primary uppercase tracking-widest">FOOD NODE</span>
+                    <span id="savings-bridged-pill" class="hidden bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full text-[9px] font-black text-orange-400 uppercase tracking-widest">Savings Bridged</span>
                 </div>
             </div>
         </div>
 
-        <div class="glass-panel rounded-3xl p-5 flex flex-col gap-4">
+        <div class="glass-card rounded-3xl p-5 flex flex-col gap-4 animate-content" style="animation-delay: 0.4s">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary text-xl">shield</span>
-                    <span class="text-xs font-bold text-slate-300">Defender Check</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Defender Status</span>
                 </div>
-                <span class="text-[9px] font-black text-primary bg-primary/10 px-2 py-1 rounded-md uppercase tracking-tighter">100% Safe</span>
+                <span class="text-[9px] font-black text-primary bg-primary/10 px-2 py-1 rounded-md uppercase">100% Secure</span>
             </div>
             <div class="w-full h-[1px] bg-white/5"></div>
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-cyan-400 text-xl">account_balance_wallet</span>
-                    <span class="text-xs font-bold text-slate-300">Controller Status</span>
+                    <span class="material-symbols-outlined text-cyan-accent text-xl">account_balance_wallet</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Controller Sync</span>
                 </div>
-                <span class="text-[10px] text-slate-500">Within Budget</span>
+                <span id="budget-status-label" class="text-[9px] font-black text-slate-500 uppercase">Synchronized</span>
             </div>
         </div>
 
-        <div class="w-full pt-4 space-y-6">
-            <button onclick="finalizeAndHome()" class="hero-btn w-full py-5 rounded-3xl text-black font-black text-lg tracking-widest uppercase active:scale-95 transition-all">
-                Back to Home
+        <div class="w-full pt-4 space-y-6 animate-content" style="animation-delay: 0.5s">
+            <button onclick="finalizeAndHome()" class="hero-btn w-full py-5 rounded-3xl text-black font-black text-sm tracking-[0.3em] uppercase active:scale-95 transition-all">
+                Finalize & Exit →
             </button>
-            <p class="text-[10px] text-slate-600 font-bold uppercase tracking-[0.2em] cursor-pointer hover:text-slate-400 transition-colors">Download Receipt</p>
+            <div class="flex items-center justify-center gap-2 text-slate-600 hover:text-slate-400 transition-colors cursor-pointer group">
+                <span class="material-symbols-outlined text-sm">download</span>
+                <p class="text-[9px] font-black uppercase tracking-[0.2em]">Generate Digital Receipt</p>
+            </div>
         </div>
     </div>
 
@@ -76,36 +127,58 @@
     document.addEventListener('DOMContentLoaded', () => {
         const p = JSON.parse(sessionStorage.getItem('pending_payment'));
         if (p) {
-            document.getElementById('final-amount').textContent = `₹${parseFloat(p.amount).toLocaleString('en-IN')}`;
+            document.getElementById('final-amount').textContent = `₹${parseFloat(p.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
             document.getElementById('final-merchant').textContent = p.merchantName;
-            document.getElementById('final-cat').textContent = `Category: ${p.category}`;
-            document.getElementById('txn-id').textContent = '#FNX-' + Math.floor(100000 + Math.random() * 900000) + '-SEC';
+            document.getElementById('final-cat-pill').textContent = `${p.category} NODE`;
+            
+            // Generate a real-looking tactical ID
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('txn-id').textContent = `#FX-${randomID}-SEC`;
+
+            // If overage happened, show the pill
+            if (parseFloat(p.overage) > 0) {
+                document.getElementById('savings-bridged-pill').classList.remove('hidden');
+                document.getElementById('budget-status-label').textContent = "Bridged from Vault";
+                document.getElementById('budget-status-label').className = "text-[9px] font-black text-orange-400 uppercase";
+            }
         }
     });
 
     function finalizeAndHome() {
         const pending = JSON.parse(sessionStorage.getItem('pending_payment'));
+        
         if (pending) {
-            // 1. Live Wallet Subtraction
+            // 1. UPDATE MASTER CAPITAL
             let currentBal = parseFloat(localStorage.getItem('finnexus_balance') || 0);
-            localStorage.setItem('finnexus_balance', (currentBal - parseFloat(pending.amount)).toFixed(2));
+            const totalAmount = parseFloat(pending.amount);
+            const overage = parseFloat(pending.overage || 0);
+            
+            // Logic: Subtract the amount that came from the budget. 
+            // The savings pull is technically already in a separate vault or counted as spent from liquidity.
+            localStorage.setItem('finnexus_balance', (currentBal - totalAmount).toFixed(2));
 
-            // 2. Monthly Spending Update (for live budget checking)
-            let catKey = `budget_${pending.category.toLowerCase()}_spent`;
+            // 2. UPDATE CATEGORY SPENDING
+            const catKey = `budget_${pending.category.toLowerCase()}_spent`;
             let currentSpent = parseFloat(localStorage.getItem(catKey) || 0);
-            localStorage.setItem(catKey, (currentSpent + parseFloat(pending.amount)).toFixed(2));
+            localStorage.setItem(catKey, (currentSpent + totalAmount).toFixed(2));
 
-            // 3. History Entry
+            // 3. LOG TO HISTORY
             let history = JSON.parse(localStorage.getItem('finnexus_history') || '[]');
-            history.unshift({
+            const newLog = {
                 merchant: pending.merchantName,
                 amount: pending.amount,
                 category: pending.category,
-                date: "Today, " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                isSafe: true
-            });
-            localStorage.setItem('finnexus_history', JSON.stringify(history));
+                date: new Date().toLocaleDateString('en-GB'),
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isSafe: true,
+                isBridged: overage > 0
+            };
+            
+            history.unshift(newLog);
+            localStorage.setItem('finnexus_history', JSON.stringify(history.slice(0, 50))); // Keep last 50
         }
+
+        // 4. CLEANUP & REDIRECT
         sessionStorage.removeItem('pending_payment');
         window.location.href = '../../home.html';
     }
