@@ -16,14 +16,15 @@
             color: white;
         }
 
+        /* SYNCED LIVE BACKGROUND */
         .aurora-mesh {
             background: 
-                radial-gradient(circle at 50% -10%, rgba(61, 235, 145, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at var(--x, 50%) var(--y, -10%), rgba(61, 235, 145, 0.12) 0%, transparent 50%),
                 radial-gradient(circle at 50% 110%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
             position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            transition: background 0.3s ease-out;
         }
 
-        /* The Box Logic */
         .glass-checkbox-card {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(20px);
@@ -31,7 +32,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Custom Checkbox centering */
         .custom-checkbox {
             width: 24px;
             height: 24px;
@@ -60,7 +60,6 @@
             display: block;
         }
 
-        /* Button States */
         .btn-3d-emerald {
             background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%);
             box-shadow: 0 12px 30px -10px rgba(61, 235, 145, 0.5),
@@ -81,30 +80,30 @@
     </style>
 </head>
 <body class="p-6 flex flex-col items-center">
-    <div class="aurora-mesh"></div>
+    <div class="aurora-mesh" id="mesh"></div>
     
     <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-10 fade-in">
-        <button onclick="window.history.back()" class="p-2 -ml-2 text-slate-500 hover:text-white transition-all">
+        <button onclick="window.history.back()" class="p-2 -ml-2 text-slate-500 hover:text-white transition-all active:scale-75">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
             </svg>
         </button>
-        <h2 class="text-xs font-black tracking-[0.3em] uppercase text-primary">FinNexus</h2>
+        <h2 class="text-xs font-black tracking-[0.3em] uppercase text-primary italic">FinNexus Node</h2>
         <div class="w-10"></div>
     </header>
 
     <main class="flex-1 flex flex-col items-center justify-center w-full max-w-sm text-center -mt-10">
         <div class="mb-12 relative fade-in">
-            <div class="absolute inset-0 bg-cyan-400/10 blur-[60px] rounded-full"></div>
+            <div class="absolute inset-0 bg-cyan-400/10 blur-[60px] rounded-full animate-pulse"></div>
             <div class="relative w-32 h-32 bg-white/5 border border-white/10 rounded-full flex items-center justify-center">
                 <span class="material-symbols-outlined text-6xl text-cyan-400" style="font-variation-settings: 'FILL' 1">shield_with_heart</span>
             </div>
         </div>
 
         <div class="space-y-3 mb-10 fade-in">
-            <h1 class="text-3xl font-black tracking-tight text-white uppercase">Final Protocol</h1>
-            <p class="text-slate-500 text-xs font-bold uppercase tracking-widest max-w-[250px] mx-auto leading-relaxed">
+            <h1 class="text-3xl font-black tracking-tight text-white uppercase italic">Final Protocol</h1>
+            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-widest max-w-[250px] mx-auto leading-relaxed">
                 Confirm your agreement to initialize the firewall bridge.
             </p>
         </div>
@@ -122,12 +121,23 @@
 
     <footer class="p-8 w-full max-w-sm fade-in">
         <button id="activate-btn" class="btn-3d-emerald btn-inactive w-full py-5 rounded-2xl text-black font-black text-sm tracking-[0.3em] uppercase flex items-center justify-center gap-3 active:scale-95 transition-all">
-            GET STARTED
+            INITIALIZE CORE
             <span class="material-symbols-outlined text-lg">bolt</span>
         </button>
     </footer>
 
     <script>
+        const activeUser = localStorage.getItem('fn_user');
+        const mesh = document.getElementById('mesh');
+
+        // 1. Live Background Sync
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            mesh.style.setProperty('--x', `${x}%`);
+            mesh.style.setProperty('--y', `${y}%`);
+        });
+
         // Checkbox Logic: Only enable button if checked
         function toggleButton() {
             const checkbox = document.getElementById('terms-check');
@@ -135,36 +145,35 @@
             
             if (checkbox.checked) {
                 btn.classList.remove('btn-inactive');
+                if (navigator.vibrate) navigator.vibrate(15);
             } else {
                 btn.classList.add('btn-inactive');
             }
         }
 
         document.getElementById('activate-btn').addEventListener('click', () => {
-            // GATHER ALL TEMPORARY DATA
-            const mobile = localStorage.getItem('finnexus_temp_mobile');
-            const name = localStorage.getItem('finnexus_temp_name');
-            const age = localStorage.getItem('finnexus_temp_age');
-            const upi = localStorage.getItem('finnexus_preferred_upi');
+            if (!activeUser) return window.location.href = '../../index.html';
 
-            // SEAL THE PERMANENT PROFILE
-            const profile = {
-                mobile: mobile,
-                name: name,
-                age: age,
-                preferred_upi: upi,
-                joinedDate: new Date().toISOString(),
-                status: "ACTIVE"
+            // GATHER DATA SAVED IN STEP 1 & 2
+            const existingProfile = JSON.parse(localStorage.getItem(`profile_${activeUser}`)) || {};
+            
+            // SEAL PERMANENT PROFILE
+            const finalProfile = {
+                ...existingProfile,
+                status: "ACTIVE",
+                activationDate: new Date().toISOString(),
+                termsAccepted: true
             };
 
-            // SAVE TO PERMANENT DATABASE
-            localStorage.setItem(`finnexus_profile_${mobile}`, JSON.stringify(profile));
+            // SAVE TO PERMANENT USER-KEYED DATABASE
+            localStorage.setItem(`profile_${activeUser}`, JSON.stringify(finalProfile));
             
-            // CLEAN UP
-            localStorage.removeItem('finnexus_temp_name');
-            localStorage.removeItem('finnexus_temp_age');
+            // INITIALIZE BLANK WALLET FOR THIS USER
+            if (!localStorage.getItem(`${activeUser}_balance`)) {
+                localStorage.setItem(`${activeUser}_balance`, "0");
+            }
 
-            // SUCCESS: GO TO HOME PAGE
+            // REDIRECT TO DASHBOARD
             window.location.href = '../../home.html';
         });
     </script>

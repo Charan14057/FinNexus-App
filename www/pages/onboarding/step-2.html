@@ -2,128 +2,121 @@
 <html class="dark" lang="en">
 <head>
     <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>FinNexus | UPI Selection</title>
+    <title>FinNexus | Gateway Sync</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;900&display=swap" rel="stylesheet"/>
     <style>
-        body {
-            font-family: 'Inter Tight', sans-serif;
-            background-color: #0D0D0D;
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        .aurora-mesh {
-            background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.12), transparent 40%);
-            position: fixed; inset: 0; pointer-events: none; z-index: -1;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 28px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .selected-card {
-            border-color: #3deb91;
-            background: rgba(61, 235, 145, 0.03);
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 20px 40px -10px rgba(61, 235, 145, 0.1);
-        }
-        .checkmark-ui {
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.3s ease;
-        }
-        .selected-card .checkmark-ui {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .btn-emerald-gloss {
-            background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%);
-            box-shadow: 0 10px 25px -5px rgba(61, 235, 145, 0.3);
-        }
-        .fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
-        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        body { font-family: 'Inter Tight', sans-serif; background-color: #0D0D0D; color: white; min-height: 100vh; overflow-x: hidden; }
         
+        .aurora-mesh {
+            background: radial-gradient(circle at var(--x, 100%) var(--y, 0%), rgba(6, 182, 212, 0.12), transparent 40%);
+            position: fixed; inset: 0; pointer-events: none; z-index: -1;
+            transition: background 0.3s ease-out;
+        }
+
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 32px; 
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0; transform: translateY(20px);
+        }
+        
+        .selected-card { 
+            border-color: #3deb91 !important; 
+            background: rgba(61, 235, 145, 0.05); 
+            transform: translateY(-6px) scale(1.03) !important; 
+            box-shadow: 0 20px 40px -10px rgba(61, 235, 145, 0.15); 
+        }
+
+        .checkmark-ui { 
+            position: absolute; top: 12px; right: 12px;
+            opacity: 0; transform: scale(0); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            background: #3deb91; border-radius: 50%; padding: 2px;
+        }
+        .selected-card .checkmark-ui { opacity: 1; transform: scale(1); }
+
+        .btn-emerald-gloss { 
+            background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); 
+            box-shadow: 0 10px 25px -5px rgba(61, 235, 145, 0.3); 
+        }
+
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .stagger-1 { animation: slideUp 0.8s 0.1s ease forwards; }
+        .stagger-2 { animation: slideUp 0.8s 0.2s ease forwards; }
+        .stagger-3 { animation: slideUp 0.8s 0.3s ease forwards; }
+        .stagger-4 { animation: slideUp 0.8s 0.4s ease forwards; }
+
+        .fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        @keyframes fadeIn { to { opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .logo-box { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: white; padding: 10px; }
     </style>
 </head>
 <body class="p-6 flex flex-col items-center">
-    <div class="aurora-mesh"></div>
+    <div class="aurora-mesh" id="mesh"></div>
     
-    <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-10 fade-in" style="animation-delay: 0.1s">
+    <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-10 fade-in">
         <button onclick="window.location.href='step-1.html'" class="flex items-center gap-2 text-slate-500 hover:text-white transition-all">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             <span class="text-[10px] font-black uppercase tracking-widest">Back</span>
         </button>
-        <h2 class="text-xs font-black tracking-[0.3em] uppercase text-primary">FinNexus</h2>
+        <h2 class="text-xs font-black tracking-[0.3em] uppercase text-primary italic">FinNexus</h2>
         <div class="w-10"></div>
     </header>
 
-    <div class="relative z-10 w-full max-w-sm mb-10 fade-in" style="animation-delay: 0.2s">
+    <div class="relative z-10 w-full max-w-sm mb-10 fade-in">
         <div class="flex justify-between items-end mb-3">
-            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400">Step 2 of 3</span>
-            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500">66% Secure</span>
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400">Step 02 / 03</span>
+            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-600">66% Secure</span>
         </div>
         <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full rounded-full bg-gradient-to-r from-cyan-500 to-primary shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all duration-1000" style="width: 66.6%;"></div>
+            <div class="h-full rounded-full bg-gradient-to-r from-cyan-500 to-primary shadow-[0_0_15px_rgba(6,182,212,0.4)]" style="width: 66.6%;"></div>
         </div>
     </div>
 
-    <div class="w-full max-w-sm mb-10 fade-in" style="animation-delay: 0.3s">
-        <h1 class="text-2xl font-black leading-tight tracking-tight text-white">Preferred Gateway</h1>
-        <p class="text-slate-500 mt-2 text-[11px] font-bold uppercase tracking-widest leading-relaxed">Select your primary wallet to sync the bridge.</p>
+    <div class="w-full max-w-sm mb-10 fade-in">
+        <h1 class="text-2xl font-black leading-tight tracking-tight text-white uppercase italic">Gateway Bridge</h1>
+        <p class="text-slate-500 mt-2 text-[11px] font-bold uppercase tracking-widest leading-relaxed">Sync your primary settlement engine.</p>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 w-full max-w-sm pb-32 fade-in" id="upi-grid" style="animation-delay: 0.4s">
-        
-        <div class="glass-card flex flex-col items-center gap-5 p-7 cursor-pointer selected-card relative group" data-app="Google Pay">
-            <div class="size-14 flex items-center justify-center bg-white rounded-2xl shadow-xl transition-transform group-active:scale-90">
-                <svg viewBox="0 0 48 48" width="32" height="32">
-                    <path fill="#4285F4" d="M46.1,24.5c0-1.6-0.1-3.1-0.4-4.5H24v8.6h12.4c-0.5,2.9-2.2,5.3-4.6,6.9v5.7h7.5C43.7,37.2,46.1,31.3,46.1,24.5z"/>
-                    <path fill="#34A853" d="M24,47c6.2,0,11.4-2.1,15.2-5.6l-7.5-5.7c-2.1,1.4-4.7,2.2-7.7,2.2c-6,0-11-4-12.8-9.5H3.5v5.9C7.3,41.7,15.1,47,24,47z"/>
-                    <path fill="#FBBC05" d="M11.2,28.4c-0.5-1.4-0.7-2.9-0.7-4.4s0.2-3,0.7-4.4V13.7H3.5c-1.6,3.2-2.5,6.7-2.5,10.3s0.9,7.1,2.5,10.3L11.2,28.4z"/>
-                    <path fill="#EA4335" d="M24,10.7c3.4,0,6.4,1.2,8.8,3.4l6.6-6.6C35.4,3.8,30.2,1.5,24,1.5c-8.9,0-16.7,5.3-20.5,13.1l7.7,5.9C13,14.8,18,10.7,24,10.7z"/>
-                </svg>
+    <div class="grid grid-cols-2 gap-4 w-full max-w-sm pb-32" id="upi-grid">
+        <div class="glass-card stagger-1 flex flex-col items-center gap-5 p-7 cursor-pointer selected-card relative group" data-app="Google Pay">
+            <div class="logo-box">
+                <svg viewBox="0 0 48 48" width="40"><path fill="#4285F4" d="M46.1,24.5c0-1.6-0.1-3.1-0.4-4.5H24v8.6h12.4c-0.5,2.9-2.2,5.3-4.6,6.9v5.7h7.5C43.7,37.2,46.1,31.3,46.1,24.5z"/><path fill="#34A853" d="M24,47c6.2,0,11.4-2.1,15.2-5.6l-7.5-5.7c-2.1,1.4-4.7,2.2-7.7,2.2c-6,0-11-4-12.8-9.5H3.5v5.9C7.3,41.7,15.1,47,24,47z"/><path fill="#FBBC05" d="M11.2,28.4c-0.5-1.4-0.7-2.9-0.7-4.4s0.2-3,0.7-4.4V13.7H3.5c-1.6,3.2-2.5,6.7-2.5,10.3s0.9,7.1,2.5,10.3L11.2,28.4z"/><path fill="#EA4335" d="M24,10.7c3.4,0,6.4,1.2,8.8,3.4l6.6-6.6C35.4,3.8,30.2,1.5,24,1.5c-8.9,0-16.7,5.3-20.5,13.1l7.7,5.9C13,14.8,18,10.7,24,10.7z"/></svg>
             </div>
             <p class="text-white text-[10px] font-black uppercase tracking-widest">G-Pay</p>
-            <div class="absolute top-4 right-4 checkmark-ui">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#3deb91"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-            </div>
+            <div class="checkmark-ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="black"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
 
-        <div class="glass-card flex flex-col items-center gap-5 p-7 cursor-pointer relative group" data-app="PhonePe">
-            <div class="size-14 flex items-center justify-center bg-[#5f259f] rounded-2xl shadow-xl transition-transform group-active:scale-90">
-                <span class="text-white font-black text-2xl italic">P</span>
+        <div class="glass-card stagger-2 flex flex-col items-center gap-5 p-7 cursor-pointer relative group" data-app="PhonePe">
+            <div class="logo-box" style="background:#5f259f">
+                <svg viewBox="0 0 24 24" width="32" fill="white"><path d="M18.8 3.5C17.3 2.1 15.3 1.3 13.2 1.3c-4.4 0-8 3.6-8 8 0 2.1.8 4.1 2.2 5.5l5.8 5.8c.2.2.5.2.7 0l5.8-5.8c1.4-1.4 2.2-3.4 2.2-5.5 0-2.1-.8-4.1-2.2-5.5zM13.2 13.3c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/></svg>
             </div>
             <p class="text-white text-[10px] font-black uppercase tracking-widest">PhonePe</p>
+            <div class="checkmark-ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="black"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
 
-        <div class="glass-card flex flex-col items-center gap-5 p-7 cursor-pointer relative group" data-app="Paytm">
-            <div class="size-14 flex items-center justify-center bg-[#00baf2] rounded-2xl shadow-xl transition-transform group-active:scale-90">
-                <span class="text-white font-black text-xs uppercase tracking-tighter">Paytm</span>
+        <div class="glass-card stagger-3 flex flex-col items-center gap-5 p-7 cursor-pointer relative group" data-app="Paytm">
+            <div class="logo-box">
+                <svg viewBox="0 0 100 32" width="50"><path fill="#00baf2" d="M12.4 4.5h-5V30h5V4.5zM30.4 4.5h-5V30h5V4.5zM22.4 4.5h-5v13.2c0 2.8 1.1 4.5 4.3 4.5h.7V17.7h-.3c-.9 0-1.2-.4-1.2-1.3V4.5zM48.5 4.5h-5.2l-2.4 8.2-2.4-8.2h-5.2V30h4.5V11.5l2.6 8.5h1l2.6-8.5V30h4.5V4.5z"/></svg>
             </div>
             <p class="text-white text-[10px] font-black uppercase tracking-widest">Paytm</p>
+            <div class="checkmark-ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="black"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
 
-        <div class="glass-card flex flex-col items-center gap-5 p-7 cursor-pointer relative group" data-app="Amazon Pay">
-            <div class="size-14 flex items-center justify-center bg-[#232f3e] rounded-2xl shadow-xl transition-transform group-active:scale-90">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="#FF9900">
-                    <path d="M15.9,13.1c-0.1,0-0.2,0.1-0.2,0.1c-1.3,1.3-3.6,1.4-5,0.2c-0.1-0.1-0.2-0.1-0.3,0l-1,1c-0.1,0.1-0.1,0.2,0,0.3 c2.2,1.9,5.7,1.8,7.7-0.1c0.1-0.1,0.1-0.2,0-0.3L15.9,13.1z"/>
-                    <path d="M22,12c0,5.5-4.5,10-10,10S2,17.5,2,12S6.5,2,12,2S22,6.5,22,12z M12,4c-4.4,0-8,3.6-8,8s3.6,8,8,8s8-3.6,8-8S16.4,4,12,4z"/>
-                </svg>
+        <div class="glass-card stagger-4 flex flex-col items-center gap-5 p-7 cursor-pointer relative group" data-app="Amazon Pay">
+            <div class="logo-box">
+                <svg viewBox="0 0 24 24" width="32"><path fill="#232f3e" d="M18.5,13.5c-0.8-0.6-2.1-0.9-3.7-0.9c-1.3,0-2.4,0.2-3,0.6c-0.7,0.4-1,1-1,1.8c0,1.2,0.9,1.9,2.4,1.9 c1.1,0,2.1-0.3,2.8-0.9c0.7-0.5,1.1-1.2,1.1-2.1V13.5z M18.7,18.4c-0.8,0.7-2,1.1-3.6,1.1c-2.4,0-4-1.3-4-3.5c0-1.4,0.7-2.4,2-3.1 c1-0.5,2.5-0.8,4.3-0.8c0.4,0,0.9,0,1.3,0.1v-0.5c0-1.4-0.8-2.1-2.6-2.1c-1.3,0-2.6,0.4-3.5,1.1l-0.8-1.5c1.2-0.9,3-1.4,5.1-1.4 c3.3,0,5.1,1.5,5.1,4.7v5.5c0,1.1,0.4,1.7,0.8,2.1l-1.9,1.1c-0.3-0.4-0.5-0.9-0.6-1.5L18.7,18.4z"/></svg>
             </div>
             <p class="text-white text-[10px] font-black uppercase tracking-widest">Amazon</p>
+            <div class="checkmark-ui"><svg width="14" height="14" viewBox="0 0 24 24" fill="black"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto p-8 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D] to-transparent z-20">
+    <div class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto p-10 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D] to-transparent z-20">
         <button id="next-btn" class="btn-emerald-gloss w-full h-16 rounded-2xl text-black font-black text-sm tracking-[0.2em] uppercase flex items-center justify-center gap-3 active:scale-95 transition-all">
-            Secure & Continue →
+            Bridge Account →
         </button>
     </div>
 
@@ -131,28 +124,32 @@
         document.addEventListener('DOMContentLoaded', () => {
             const cards = document.querySelectorAll('.glass-card');
             const nextBtn = document.getElementById('next-btn');
-            let selectedApp = "Google Pay";
+            const mesh = document.getElementById('mesh');
+            const activeUser = localStorage.getItem('fn_user');
+            
+            if (!activeUser) window.location.href = '../../index.html';
 
-            const checkmarkSVG = `<div class="absolute top-4 right-4 checkmark-ui"><svg width="18" height="18" viewBox="0 0 24 24" fill="#3deb91"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>`;
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                mesh.style.setProperty('--x', `${x}%`);
+                mesh.style.setProperty('--y', `${y}%`);
+            });
+
+            let selectedApp = "Google Pay";
 
             cards.forEach(card => {
                 card.addEventListener('click', () => {
-                    // Reset all
-                    cards.forEach(c => {
-                        c.classList.remove('selected-card');
-                        const check = c.querySelector('.checkmark-ui');
-                        if (check) check.remove();
-                    });
-
-                    // Select clicked
+                    cards.forEach(c => c.classList.remove('selected-card'));
                     card.classList.add('selected-card');
-                    card.insertAdjacentHTML('beforeend', checkmarkSVG);
                     selectedApp = card.dataset.app;
                 });
             });
 
             nextBtn.addEventListener('click', () => {
-                localStorage.setItem('finnexus_preferred_upi', selectedApp);
+                const profile = JSON.parse(localStorage.getItem(`profile_${activeUser}`)) || {};
+                profile.preferred_upi = selectedApp;
+                localStorage.setItem(`profile_${activeUser}`, JSON.stringify(profile));
                 window.location.href = 'step-3.html';
             });
         });

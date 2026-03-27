@@ -26,13 +26,19 @@
         }
     </script>
     <style>
+        body { background-color: #0D0D0D; min-height: 100dvh; overflow-x: hidden; font-family: 'Inter', sans-serif; }
+        
+        /* SYNCED NEURAL BACKGROUND */
         .aurora-glow {
-            background: radial-gradient(circle at 0% 0%, rgba(61, 235, 145, 0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 100% 100%, rgba(0, 242, 255, 0.1) 0%, transparent 50%);
+            background: 
+                radial-gradient(circle at var(--x, 0%) var(--y, 0%), rgba(61, 235, 145, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(0, 242, 255, 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #0D0D0D 0%, #050505 100%);
+            position: fixed; inset: 0; z-index: -1;
         }
+
         .glass-panel { background: rgba(15, 15, 15, 0.98); backdrop-filter: blur(40px); border-top: 1px solid rgba(255, 255, 255, 0.08); }
         
-        /* High-Intensity Scanner Animation */
         .scanner-line {
             height: 3px;
             background: linear-gradient(90deg, transparent, #00f2ff, transparent);
@@ -43,10 +49,9 @@
         @keyframes scan { 0%, 100% { top: 5%; opacity: 0.2; } 50% { top: 95%; opacity: 1; } }
         
         .cyber-bracket { border-color: #00f2ff; box-shadow: 0 0 15px rgba(0, 242, 255, 0.4); }
-        
-        .hero-button-3d {
-            background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%);
-            box-shadow: 0 10px 25px -5px rgba(61, 235, 145, 0.4);
+        .hero-button-3d { 
+            background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); 
+            box-shadow: 0 10px 25px -5px rgba(61, 235, 145, 0.4); 
         }
         
         .cursor-blink { animation: blink 1s step-end infinite; border-right: 3px solid #3deb91; }
@@ -56,32 +61,32 @@
         #reader video { object-fit: cover !important; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        body { background-color: #0D0D0D; min-height: 100dvh; overflow-x: hidden; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<body class="bg-background-dark font-display text-slate-100 antialiased aurora-glow">
+<body class="text-slate-100 antialiased">
+    <div class="aurora-glow" id="mesh"></div>
 
 <div class="relative flex h-screen w-full flex-col">
     <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between p-6">
-        <button onclick="window.location.href='home.html'" class="size-10 flex items-center justify-center rounded-full bg-black/40 border border-white/10 backdrop-blur-md active:scale-75 transition-transform">
+        <button onclick="window.location.href='home.html'" class="size-11 flex items-center justify-center rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md active:scale-75 transition-transform">
             <span class="material-symbols-outlined text-white text-xl">arrow_back</span>
         </button>
         <div class="flex flex-col items-center">
-            <span class="text-[9px] font-black tracking-[0.4em] uppercase text-primary italic">FinNexus Live Cam</span>
+            <span class="text-[10px] font-black tracking-[0.4em] uppercase text-primary italic">FinNexus Live Cam</span>
             <div id="status-dot" class="flex items-center gap-1.5 mt-1">
                 <span class="size-1.5 bg-primary rounded-full animate-pulse"></span>
                 <span class="text-[8px] font-bold text-slate-400 uppercase">System Ready</span>
             </div>
         </div>
-        <button onclick="toggleFlash()" class="size-10 flex items-center justify-center rounded-full bg-black/40 border border-white/10 backdrop-blur-md active:scale-75">
+        <button id="flash-toggle" onclick="toggleFlash()" class="size-11 flex items-center justify-center rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md active:scale-75">
             <span class="material-symbols-outlined text-white text-xl">flashlight_on</span>
         </button>
     </header>
 
     <main class="relative flex-1 flex flex-col items-center justify-center pt-10">
         <div class="relative w-72 h-72 mb-10">
-            <div id="reader" class="relative z-0 border border-white/10"></div>
+            <div id="reader" class="relative z-0"></div>
             
             <div class="absolute inset-0 z-10 pointer-events-none">
                 <div class="scanner-line"></div>
@@ -92,10 +97,10 @@
             </div>
         </div>
 
-        <div class="w-full px-10 space-y-3 max-w-sm">
+        <div class="w-full px-10 max-w-sm">
             <div class="relative group">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg group-focus-within:text-primary">alternate_email</span>
-                <input type="text" id="manual-upi" placeholder="UPI ID or Phone" class="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:border-primary focus:ring-0 outline-none transition-all" oninput="validateOnEntry(this.value)">
+                <input type="text" id="manual-upi" placeholder="UPI ID or Phone" class="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-12 pr-4 text-sm focus:border-primary focus:ring-0 outline-none transition-all uppercase font-bold tracking-widest" oninput="validateOnEntry(this.value)">
             </div>
         </div>
     </main>
@@ -104,13 +109,13 @@
         <div class="w-12 h-1 bg-white/10 rounded-full mx-auto my-4"></div>
         
         <div class="text-center mb-6">
-            <h2 id="display-merchant-name" class="text-xl font-black text-slate-100 tracking-tight uppercase">Scanning Nodes...</h2>
-            <p id="display-merchant-id" class="text-slate-500 text-[10px] font-mono tracking-widest mt-1 italic">POSITION QR IN BRACKETS</p>
+            <h2 id="display-merchant-name" class="text-xl font-black text-slate-100 tracking-tight uppercase italic">Waiting for Node...</h2>
+            <p id="display-merchant-id" class="text-slate-500 text-[10px] font-mono tracking-widest mt-1 uppercase">Align QR in brackets</p>
         </div>
 
         <div class="relative mb-8 text-center" onclick="document.getElementById('real-input').focus()">
             <div class="flex items-center justify-center gap-1">
-                <span class="text-3xl font-black text-primary/40 self-end mb-2">₹</span>
+                <span class="text-3xl font-black text-primary/40 mb-2">₹</span>
                 <div class="flex flex-col items-center relative">
                     <input type="number" id="real-input" class="absolute inset-0 opacity-0 cursor-default" oninput="updateVisualAmount(this.value)">
                     <div id="visual-amount" class="text-6xl font-black text-white tracking-tighter min-h-[72px] flex items-center">
@@ -123,35 +128,29 @@
 
         <div class="flex gap-2 overflow-x-auto pb-8 no-scrollbar" id="category-bar"></div>
 
-        <div id="action-wrapper">
-            <button id="main-proceed-btn" onclick="handleVerifyAndProceed()" class="hero-button-3d w-full py-5 rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-transform">
-                <span class="material-symbols-outlined text-white font-bold">shield</span>
-                <span class="text-white text-lg font-black tracking-widest uppercase">Verify & Proceed</span>
-            </button>
-        </div>
+        <button id="main-proceed-btn" onclick="handleVerifyAndProceed()" class="hero-button-3d w-full py-5 rounded-2xl flex items-center justify-center gap-3 active:scale-95 transition-all">
+            <span class="material-symbols-outlined text-white font-bold">shield</span>
+            <span class="text-white text-lg font-black tracking-widest uppercase">Verify & Proceed</span>
+        </button>
     </div>
 </div>
 
 <script>
+    // DATA ISOLATION PRE-LOAD
+    const activeUser = localStorage.getItem('fn_user');
+    if (!activeUser) window.location.href = 'index.html';
+
     let selectedCategory = null;
     let activeID = null;
-    let scanner = null;
+    let html5QrCode = null;
+    let isTorchOn = false;
 
-    // 10-ITEM DEMO DATASET (Real vs Scam)
+    // REAL-WORLD SCAM REGISTRY
     const REGISTRY = {
-        // REAL ENTITIES
+        "9876543210": { name: "SCAM ALERT: BLOCKED", isScam: true },
+        "fraud.hacker@upi": { name: "THREAT DETECTED", isScam: true },
         "merchant.bluetokai@finnexus": { name: "Blue Tokai Coffee", isScam: false },
-        "grocery.store@okaxis": { name: "Reliance Fresh", isScam: false },
-        "8887776665": { name: "Alexander (Verified Friend)", isScam: false },
-        "electricity.bill@okhdfc": { name: "TNEB Official", isScam: false },
-        "zomato.pay@okicici": { name: "Zomato Limited", isScam: false },
-        
-        // SCAM ENTITIES
-        "9876543210": { name: "BLOCKLISTED: FRAUDULENT NUMBER", isScam: true },
-        "scam.hacker@upi": { name: "SOCIAL ENGINEERING ALERT", isScam: true },
-        "win.prize@upi": { name: "LOTTERY SCAM DETECTED", isScam: true },
-        "9990001112": { name: "SUSPICIOUS IMPERSONATOR", isScam: true },
-        "fake.bank.support@upi": { name: "PHISHING ATTEMPT DETECTED", isScam: true }
+        "grocery.store@okaxis": { name: "Reliance Fresh", isScam: false }
     };
 
     function updateVisualAmount(val) {
@@ -161,8 +160,8 @@
 
     function validateOnEntry(val) {
         if (!val || val.length < 3) return;
-        activeID = val;
-        const data = REGISTRY[val] || { name: "Unverified Entity", isScam: false };
+        activeID = val.toLowerCase();
+        const data = REGISTRY[activeID] || { name: "Unverified Entity", isScam: false };
         
         const nameEl = document.getElementById('display-merchant-name');
         const idEl = document.getElementById('display-merchant-id');
@@ -172,34 +171,39 @@
         idEl.textContent = val;
 
         if (data.isScam) {
-            nameEl.className = "text-xl font-black text-error-red tracking-tight animate-pulse";
-            btn.innerHTML = `<span class="material-symbols-outlined">block</span> BLOCKED BY FIREWALL`;
-            btn.className = "w-full py-5 rounded-2xl flex items-center justify-center gap-3 bg-red-500/20 border border-red-500/40 text-error-red font-black uppercase";
+            nameEl.className = "text-xl font-black text-error-red tracking-tight animate-pulse uppercase";
+            btn.innerHTML = `<span class="material-symbols-outlined">block</span> TERMINATED BY FIREWALL`;
+            btn.className = "w-full py-5 rounded-2xl flex items-center justify-center gap-3 bg-red-500/20 text-error-red font-black uppercase";
+            // FORCE REDIRECT TO DEFENDER
             btn.onclick = () => window.location.href = 'pages/onboarding/barriers/defender.html';
+            setTimeout(() => { window.location.href = 'pages/onboarding/barriers/defender.html'; }, 800);
         } else {
-            nameEl.className = "text-xl font-black text-slate-100 tracking-tight uppercase";
+            nameEl.className = "text-xl font-black text-slate-100 tracking-tight uppercase italic";
             btn.innerHTML = `<span class="material-symbols-outlined">shield</span> VERIFY & PROCEED`;
-            btn.className = "hero-button-3d w-full py-5 rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98]";
+            btn.className = "hero-button-3d w-full py-5 rounded-2xl flex items-center justify-center gap-3 active:scale-95";
             btn.onclick = handleVerifyAndProceed;
         }
     }
 
-    // --- CAMERA INTEGRATION ---
     function startScanner() {
-        scanner = new Html5Qrcode("reader");
+        html5QrCode = new Html5Qrcode("reader");
         const config = { fps: 20, qrbox: { width: 250, height: 250 } };
         
-        scanner.start({ facingMode: "environment" }, config, (decodedText) => {
-            // Success: decodedText is the UPI string or ID
+        html5QrCode.start({ facingMode: "environment" }, config, (decodedText) => {
+            document.getElementById('manual-upi').value = decodedText;
             validateOnEntry(decodedText);
-            // Visual feedback
-            document.getElementById('status-dot').querySelector('span:last-child').textContent = "Target Locked";
-        });
+            document.getElementById('status-dot').querySelector('span:last-child').textContent = "TARGET LOCKED";
+            if (navigator.vibrate) navigator.vibrate(20);
+        }).catch(err => console.error("Camera access denied."));
     }
 
     function toggleFlash() {
-        // Flashlight logic usually requires the media stream track
-        alert("Flashlight requested: Deploying system override.");
+        if (!html5QrCode) return;
+        isTorchOn = !isTorchOn;
+        const track = html5QrCode.getRunningTrack();
+        if (track && track.getCapabilities().torch) {
+            track.applyConstraints({ advanced: [{ torch: isTorchOn }] });
+        }
     }
 
     function selectCat(name, el) {
@@ -211,57 +215,77 @@
     }
 
     function handleVerifyAndProceed() {
-    if (!activeID) return alert("Identify Target First");
-    const amount = parseFloat(document.getElementById('real-input').value);
-    if (!amount || amount <= 0) return alert("Invalid Volume");
+        if (!activeID) return alert("Scan or Enter Target Node");
+        const amount = parseFloat(document.getElementById('real-input').value);
+        if (!amount || amount <= 0) return alert("Specify Volume Allocation");
 
-    // 1. DATA CALCULATION (Same as before)
-    const walletData = JSON.parse(localStorage.getItem('finnexus_wallet_data')) || { categories: [] };
-    const catObj = walletData.categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase());
-    const limit = catObj ? parseFloat(catObj.limit) : 0;
-    const spent = parseFloat(localStorage.getItem(`budget_${selectedCategory.toLowerCase()}_spent`) || 0);
-    
-    let savingsPull = 0;
-    if ((spent + amount) > limit) {
-        savingsPull = (spent >= limit) ? amount : ((spent + amount) - limit);
+        // 1. LIQUIDITY CHECK (Total Balance)
+        const totalBalance = parseFloat(localStorage.getItem(`${activeUser}_balance`) || 0);
+        if (amount > totalBalance) {
+            alert(`LIQUIDITY BREACH: Transaction exceeds total available capital (₹${totalBalance.toLocaleString()})`);
+            return;
+        }
+
+        // 2. BUDGET CHECK (Category Limit)
+        const walletData = JSON.parse(localStorage.getItem(`${activeUser}_wallet_data`)) || { categories: [] };
+        const catObj = walletData.categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase());
+        const limit = catObj ? parseFloat(catObj.limit) : 0;
+        const spent = parseFloat(localStorage.getItem(`${activeUser}_budget_${selectedCategory.toLowerCase()}_spent`) || 0);
+        
+        let overage = Math.max(0, (spent + amount) - limit);
+
+        // 3. DEEP LINK CONSTRUCTOR
+        const mName = document.getElementById('display-merchant-name').textContent;
+        const upiLink = `upi://pay?pa=${activeID}&pn=${encodeURIComponent(mName)}&am=${amount.toFixed(2)}&cu=INR`;
+
+        // 4. PERSIST PENDING STATE
+        sessionStorage.setItem('pending_payment', JSON.stringify({
+            amount: amount.toFixed(2),
+            category: selectedCategory,
+            merchantName: mName,
+            merchantID: activeID,
+            overage: overage.toFixed(2),
+            deepLink: upiLink
+        }));
+
+        // 5. REDIRECTION LOGIC
+        if (overage > 0) {
+            window.location.href = 'pages/onboarding/barriers/budget.html';
+        } else {
+            // TRIGGER UPI APP
+            window.location.href = upiLink;
+            // Success handler for when user returns
+            setTimeout(() => { window.location.href = 'pages/onboarding/success.html'; }, 2000);
+        }
     }
 
-    // 2. CONSTRUCT THE REAL UPI DEEP LINK
-    // Format: upi://pay?pa=ADDRESS&pn=NAME&am=AMOUNT&cu=INR
-    const merchantName = document.getElementById('display-merchant-name').textContent;
-    const upiLink = `upi://pay?pa=${activeID}&pn=${encodeURIComponent(merchantName)}&am=${amount.toFixed(2)}&cu=INR`;
+    document.addEventListener('DOMContentLoaded', () => {
+        startScanner();
 
-    // 3. STORE TRANSACTION DATA
-    sessionStorage.setItem('pending_payment', JSON.stringify({
-        amount: amount.toFixed(2),
-        category: selectedCategory,
-        merchantName: merchantName,
-        merchantID: activeID,
-        overage: savingsPull.toFixed(2),
-        deepLink: upiLink // We store it to trigger after the budget barrier
-    }));
+        // Background Interaction
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            document.getElementById('mesh').style.setProperty('--x', `${x}%`);
+            document.getElementById('mesh').style.setProperty('--y', `${y}%`);
+        });
 
-    // 4. NAVIGATION
-    if (savingsPull > 0) {
-        // If over budget, go to Barrier first
-        window.location.href = 'pages/onboarding/barriers/budget.html';
-    } else {
-        // If within budget, trigger the UPI app immediately
-        triggerUPI(upiLink);
-    }
-}
-
-function triggerUPI(link) {
-    // This opens GPay/PhonePe/etc.
-    window.location.href = link;
-    
-    // IMPORTANT: Because browsers cannot "know" if a bank transfer succeeded 
-    // inside another app, we wait for you to return to FinNexus.
-    // We redirect to success.html so you can log it when you get back.
-    setTimeout(() => {
-        window.location.href = 'pages/onboarding/success.html';
-    }, 1500); 
-}
+        // Load Isolated Categories
+        const walletData = JSON.parse(localStorage.getItem(`${activeUser}_wallet_data`)) || { categories: [] };
+        const bar = document.getElementById('category-bar');
+        
+        if (walletData.categories.length === 0) {
+            bar.innerHTML = '<p class="text-[10px] text-slate-600 px-4 italic uppercase font-black">No segments defined in Vault</p>';
+            selectedCategory = "General";
+        } else {
+            walletData.categories.forEach((cat, index) => {
+                const isActive = index === 0;
+                const cls = isActive ? "bg-primary/20 border-primary text-primary font-black shadow-[0_0_20px_rgba(61,235,145,0.2)]" : "bg-white/5 border-white/10 text-slate-500 font-bold";
+                bar.innerHTML += `<button onclick="selectCat('${cat.name}', this)" class="cat-pill flex-none px-6 py-2.5 rounded-full border transition-all uppercase text-[10px] ${cls}">${cat.name}</button>`;
+                if(isActive) selectedCategory = cat.name;
+            });
+        }
+    });
 </script>
 </body>
 </html>

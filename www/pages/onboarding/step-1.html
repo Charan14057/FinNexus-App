@@ -7,88 +7,94 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;700&display=swap" rel="stylesheet"/>
     <style>
         body { background-color: #0D0D0D; font-family: 'Inter Tight', sans-serif; color: white; overflow: hidden; }
+        
+        /* LIVE REACTIVE BACKGROUND */
         .aurora-mesh {
-            background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.15), transparent 40%);
+            background: radial-gradient(circle at var(--x, 100%) var(--y, 0%), rgba(6, 182, 212, 0.15), transparent 40%);
             position: fixed; inset: 0; pointer-events: none;
+            transition: background 0.3s ease-out;
         }
+        
         .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         
-        /* Smooth Glow for active inputs */
+        /* Tactical Focus States */
         .input-group:focus-within svg { color: #06B6D4; filter: drop-shadow(0 0 8px rgba(6,182,212,0.6)); }
-        .input-group:focus-within input { border-color: rgba(6, 182, 212, 0.3); }
+        .input-group:focus-within input { border-color: rgba(6, 182, 212, 0.4) !important; }
         
-        input::placeholder { color: #4b5563; }
+        input::placeholder { color: #334155; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         
-        .btn-disabled { opacity: 0.5; pointer-events: none; filter: grayscale(1); }
+        .btn-disabled { opacity: 0.3; pointer-events: none; filter: grayscale(1); }
+
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        .active-glow { animation: pulse-green 2s infinite; }
     </style>
 </head>
 <body class="p-6 flex flex-col items-center min-h-screen">
-    <div class="aurora-mesh"></div>
+    <div class="aurora-mesh" id="mesh"></div>
     
     <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-12">
-        <button onclick="window.location.href='../../index.html'" class="flex items-center gap-2 text-gray-400 hover:text-white transition-all">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
+        <button onclick="window.location.href='../../index.html'" class="flex items-center gap-2 text-gray-500 hover:text-white transition-all active:scale-90">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            <span class="text-sm font-bold uppercase tracking-widest">Back</span>
+            <span class="text-[10px] font-black uppercase tracking-widest">Back</span>
         </button>
-        <h2 class="font-bold tracking-tight text-cyan-400">FinNexus</h2>
+        <h2 class="font-black tracking-[0.3em] text-xs uppercase text-cyan-400 italic">FinNexus Node</h2>
         <div class="w-10"></div>
     </header>
 
     <div class="relative z-10 w-full max-w-sm mb-10">
-        <div class="flex justify-between text-[10px] uppercase tracking-[0.2em] mb-2">
-            <span class="text-cyan-400 font-bold">Step 1 of 3</span>
-            <span id="completion-text" class="text-gray-500">0% Complete</span>
+        <div class="flex justify-between text-[9px] font-black uppercase tracking-[0.2em] mb-2">
+            <span class="text-cyan-400">Step 01 / 03</span>
+            <span id="completion-text" class="text-gray-600">0% Synchronized</span>
         </div>
-        <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-            <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-500 w-1/3 transition-all duration-700 shadow-[0_0_15px_rgba(6,182,212,0.4)]"></div>
+        <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-500 to-emerald-500 w-0 transition-all duration-1000 shadow-[0_0_15px_rgba(6,182,212,0.4)]"></div>
         </div>
     </div>
 
-    <main class="relative z-10 glass-card rounded-[32px] p-8 w-full max-w-sm space-y-6 shadow-2xl">
-        <div class="space-y-2">
-            <h1 class="text-3xl font-bold tracking-tight">Identity & Contact</h1>
-            <p class="text-gray-400 text-sm">Verify your details to secure the firewall.</p>
+    <main class="relative z-10 glass-card rounded-[32px] p-8 w-full max-w-sm space-y-8 shadow-2xl">
+        <div class="space-y-1">
+            <h1 class="text-2xl font-black tracking-tight text-white uppercase italic">Identity Auth</h1>
+            <p class="text-gray-500 text-[11px] font-bold uppercase tracking-widest leading-relaxed">Initialize your secure firewall profile.</p>
         </div>
 
-        <div class="space-y-4">
-            <div class="space-y-1 input-group">
-                <label class="text-[10px] uppercase tracking-widest text-gray-500 ml-1 font-bold">First Name</label>
+        <div class="space-y-5">
+            <div class="space-y-2 input-group">
+                <label class="text-[9px] uppercase tracking-widest text-gray-600 ml-1 font-black">Legal Alias</label>
                 <div class="relative">
-                    <input id="name" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none transition-all" placeholder="e.g. Alexander" type="text"/>
-                    <div class="absolute right-4 top-4 text-gray-600 transition-colors">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <input id="name" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold focus:outline-none transition-all placeholder:font-normal" placeholder="e.g. ALEXANDER" type="text"/>
+                    <div class="absolute right-4 top-4 text-gray-700 transition-colors">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-1 input-group">
-                <label class="text-[10px] uppercase tracking-widest text-gray-500 ml-1 font-bold">Age</label>
+            <div class="space-y-2 input-group">
+                <label class="text-[9px] uppercase tracking-widest text-gray-600 ml-1 font-black">Cycle Count (Age)</label>
                 <div class="relative">
-                    <input id="age" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none transition-all" placeholder="Enter age" type="number"/>
-                    <div class="absolute right-4 top-4 text-gray-600 transition-colors">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <input id="age" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold focus:outline-none transition-all placeholder:font-normal" placeholder="24" type="number"/>
+                    <div class="absolute right-4 top-4 text-gray-700 transition-colors">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><path d="M16 2v4M8 2v4M3 10h18"/></svg>
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-1 input-group">
-                <label class="text-[10px] uppercase tracking-widest text-gray-500 ml-1 font-bold">Mobile Number</label>
+            <div class="space-y-2 input-group">
+                <label class="text-[9px] uppercase tracking-widest text-gray-600 ml-1 font-black">Node Comms (Mobile)</label>
                 <div class="relative">
-                    <input id="phone-display" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none transition-all" placeholder="+91 00000 00000" type="tel"/>
-                    <div class="absolute right-4 top-4 text-gray-600 transition-colors">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <input id="phone-display" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white font-bold focus:outline-none transition-all opacity-80" placeholder="+91 00000 00000" type="tel"/>
+                    <div class="absolute right-4 top-4 text-gray-700">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                     </div>
                 </div>
             </div>
         </div>
 
-        <button id="next-1" class="w-full py-5 rounded-2xl bg-[#10B981] font-bold text-lg text-white shadow-xl shadow-emerald-900/20 active:scale-95 transition-all flex items-center justify-center gap-3 btn-disabled">
-            Next Step
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <button id="next-1" class="w-full py-5 rounded-2xl bg-[#10B981] font-black text-sm tracking-[0.2em] uppercase text-white shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 btn-disabled">
+            Next Protocol
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
@@ -103,58 +109,71 @@
             const nextBtn = document.getElementById('next-1');
             const progressBar = document.getElementById('progress-bar');
             const completionText = document.getElementById('completion-text');
+            const mesh = document.getElementById('mesh');
 
-            // 1. PRE-FILL the phone number
-            const storedMobile = localStorage.getItem('finnexus_temp_mobile');
-            if (storedMobile) {
-                phoneInput.value = '+91 ' + storedMobile;
-            }
+            // 1. Live Background Interaction
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                mesh.style.setProperty('--x', `${x}%`);
+                mesh.style.setProperty('--y', `${y}%`);
+            });
+
+            // 2. Data Isolation Logic
+            const getRawValue = (val) => {
+                let digits = val.replace(/\D/g, '');
+                if (digits.length > 10 && digits.startsWith('91')) digits = digits.slice(2);
+                return digits.slice(0, 10);
+            };
+
+            const storedMobile = localStorage.getItem('fn_user');
+            if (storedMobile) phoneInput.value = '+91 ' + storedMobile;
 
             function validate() {
-                const rawPhone = phoneInput.value.replace(/\D/g, '').replace('91', '');
+                const rawPhone = getRawValue(phoneInput.value);
                 const isNameValid = nameInput.value.trim().length >= 2;
-                const isAgeValid = ageInput.value >= 5 && ageInput.value <= 120;
+                const isAgeValid = ageInput.value !== "" && ageInput.value >= 5 && ageInput.value <= 100;
                 const isPhoneValid = rawPhone.length === 10;
 
-                // Simple Progress tracking logic
                 let score = 0;
                 if(isNameValid) score += 33;
                 if(isAgeValid) score += 33;
                 if(isPhoneValid) score += 34;
 
                 progressBar.style.width = score + '%';
-                completionText.textContent = score + '% Complete';
+                completionText.textContent = score + '% Synchronized';
 
                 if (isNameValid && isAgeValid && isPhoneValid) {
                     nextBtn.classList.remove('btn-disabled');
+                    nextBtn.classList.add('active-glow');
                 } else {
                     nextBtn.classList.add('btn-disabled');
+                    nextBtn.classList.remove('active-glow');
                 }
             }
 
-            // Listen for typing
-            [nameInput, ageInput, phoneInput].forEach(el => {
-                el.addEventListener('input', validate);
-            });
+            [nameInput, ageInput].forEach(el => el.addEventListener('input', validate));
 
-            // Format phone number
             phoneInput.addEventListener('input', (e) => {
-                let val = e.target.value.replace(/\D/g, '');
-                if (val.length > 10) val = val.slice(0, 10);
-                e.target.value = val.length > 0 ? '+91 ' + val : '';
+                const digits = getRawValue(e.target.value);
+                e.target.value = digits.length > 0 ? '+91 ' + digits : '';
+                validate();
             });
 
             nextBtn.addEventListener('click', () => {
-                const rawPhone = phoneInput.value.replace(/\D/g, '').replace('91', '');
+                const rawPhone = getRawValue(phoneInput.value);
                 
-                localStorage.setItem('finnexus_temp_name', nameInput.value);
-                localStorage.setItem('finnexus_temp_age', ageInput.value);
-                localStorage.setItem('finnexus_temp_mobile', rawPhone);
+                // SAVE TO USER-SPECIFIC PROFILE
+                localStorage.setItem(`profile_${rawPhone}`, JSON.stringify({
+                    name: nameInput.value,
+                    age: ageInput.value,
+                    mobile: rawPhone,
+                    joinedDate: new Date().toISOString()
+                }));
 
                 window.location.href = 'step-2.html';
             });
 
-            // Initial run to check pre-filled data
             validate();
         });
     </script>

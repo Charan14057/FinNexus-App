@@ -27,21 +27,35 @@
             background: 
                 radial-gradient(circle at 50% 50%, rgba(61, 235, 145, 0.12) 0%, transparent 70%),
                 linear-gradient(180deg, #0D0D0D 0%, #050505 100%);
+            position: relative;
         }
+
+        /* NEURAL GRID OVERLAY (Commercial Fill) */
+        .aurora-bg::before {
+            content: "";
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(61, 235, 145, 0.02) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(61, 235, 145, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .glass-card { 
             background: rgba(255, 255, 255, 0.02); 
             backdrop-filter: blur(25px); 
             border: 1px solid rgba(255, 255, 255, 0.06); 
+            position: relative; z-index: 10;
         }
+        
         .hero-btn { 
             background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); 
             box-shadow: 0 15px 35px -10px rgba(61, 235, 145, 0.4); 
         }
         
-        /* SUCCESS ANIMATIONS */
         @keyframes popIn {
             0% { transform: scale(0.8); opacity: 0; }
-            70% { transform: scale(1.1); }
+            70% { transform: scale(1.05); }
             100% { transform: scale(1); opacity: 1; }
         }
         .animate-success { animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
@@ -57,19 +71,22 @@
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animate-content { opacity: 0; animation: slideUp 0.6s 0.3s ease-out forwards; }
+
+        /* VERIFICATION MODAL */
+        #verify-modal { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="aurora-bg font-display text-slate-100 min-h-screen flex flex-col items-center justify-center p-8 overflow-hidden">
 
-    <div class="w-full max-w-sm text-center space-y-10">
+    <div class="w-full max-w-sm text-center space-y-8 relative z-10">
         
         <div class="flex flex-col items-center animate-success">
             <div class="size-24 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 relative">
                 <div class="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping"></div>
                 <span class="material-symbols-outlined text-6xl text-primary check-glow" style="font-variation-settings: 'FILL' 1">check_circle</span>
             </div>
-            <h1 class="text-3xl font-black tracking-tight uppercase italic">Protocol Secured</h1>
-            <p class="text-slate-500 text-[10px] mt-2 uppercase tracking-[0.4em] font-bold">Node: <span id="txn-id" class="text-primary opacity-80">#FX-882-SEC</span></p>
+            <h1 class="text-3xl font-black tracking-tight uppercase italic">Protocol Secure</h1>
+            <p class="text-slate-500 text-[10px] mt-2 uppercase tracking-[0.4em] font-bold">Node ID: <span id="txn-id" class="text-primary opacity-80">#FX-INIT-SEC</span></p>
         </div>
 
         <div class="glass-card rounded-[40px] p-8 space-y-8 relative overflow-hidden animate-content">
@@ -78,17 +95,17 @@
             </div>
             
             <div class="text-left relative z-10">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Bridge Destination</p>
-                <h2 id="final-merchant" class="text-2xl font-black tracking-tight text-white uppercase italic">Blue Tokai Coffee</h2>
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Settlement Destination</p>
+                <h2 id="final-merchant" class="text-2xl font-black tracking-tight text-white uppercase italic">Merchant</h2>
             </div>
 
             <div class="text-left relative z-10">
-                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Volume Released</p>
+                <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Capital Released</p>
                 <div class="flex items-baseline gap-2">
                     <h3 id="final-amount" class="text-5xl font-black text-white tracking-tighter">₹0.00</h3>
                 </div>
                 <div class="mt-4 flex items-center gap-2">
-                    <span id="final-cat-pill" class="bg-primary/10 border border-primary/20 px-3 py-1 rounded-full text-[9px] font-black text-primary uppercase tracking-widest">FOOD NODE</span>
+                    <span id="final-cat-pill" class="bg-primary/10 border border-primary/20 px-3 py-1 rounded-full text-[9px] font-black text-primary uppercase tracking-widest">NODE</span>
                     <span id="savings-bridged-pill" class="hidden bg-orange-500/10 border border-orange-500/20 px-3 py-1 rounded-full text-[9px] font-black text-orange-400 uppercase tracking-widest">Savings Bridged</span>
                 </div>
             </div>
@@ -98,89 +115,110 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary text-xl">shield</span>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Defender Status</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Firewall Status</span>
                 </div>
-                <span class="text-[9px] font-black text-primary bg-primary/10 px-2 py-1 rounded-md uppercase">100% Secure</span>
+                <span class="text-[9px] font-black text-primary bg-primary/10 px-2 py-1 rounded-md uppercase">Protected</span>
             </div>
             <div class="w-full h-[1px] bg-white/5"></div>
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-cyan-accent text-xl">account_balance_wallet</span>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Controller Sync</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Wallet Sync</span>
                 </div>
                 <span id="budget-status-label" class="text-[9px] font-black text-slate-500 uppercase">Synchronized</span>
             </div>
         </div>
 
         <div class="w-full pt-4 space-y-6 animate-content" style="animation-delay: 0.5s">
-            <button onclick="finalizeAndHome()" class="hero-btn w-full py-5 rounded-3xl text-black font-black text-sm tracking-[0.3em] uppercase active:scale-95 transition-all">
-                Finalize & Exit →
+            <button onclick="showVerifyModal()" class="hero-btn w-full py-5 rounded-3xl text-black font-black text-sm tracking-[0.3em] uppercase active:scale-95 transition-all">
+                Finalize Settlement →
             </button>
-            <div class="flex items-center justify-center gap-2 text-slate-600 hover:text-slate-400 transition-colors cursor-pointer group">
-                <span class="material-symbols-outlined text-sm">download</span>
-                <p class="text-[9px] font-black uppercase tracking-[0.2em]">Generate Digital Receipt</p>
+        </div>
+    </div>
+
+    <div id="verify-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-8">
+        <div class="glass-card w-full max-w-xs rounded-[32px] p-8 border-primary/20 text-center space-y-6">
+            <h4 class="text-xl font-black uppercase italic">Verify Payment</h4>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest leading-relaxed">Did the external UPI transaction complete successfully?</p>
+            <div class="flex flex-col gap-3">
+                <button onclick="finalize(true)" class="w-full py-4 bg-primary rounded-2xl text-black font-black uppercase text-xs tracking-widest">Yes, Settle Funds</button>
+                <button onclick="finalize(false)" class="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-slate-500 font-black uppercase text-xs tracking-widest">No, Payment Failed</button>
             </div>
         </div>
     </div>
 
 <script>
+    const activeUser = localStorage.getItem('fn_user');
+
     document.addEventListener('DOMContentLoaded', () => {
         const p = JSON.parse(sessionStorage.getItem('pending_payment'));
-        if (p) {
-            document.getElementById('final-amount').textContent = `₹${parseFloat(p.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-            document.getElementById('final-merchant').textContent = p.merchantName;
-            document.getElementById('final-cat-pill').textContent = `${p.category} NODE`;
-            
-            // Generate a real-looking tactical ID
-            const randomID = Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('txn-id').textContent = `#FX-${randomID}-SEC`;
+        if (!p) { window.location.href = '../../home.html'; return; }
 
-            // If overage happened, show the pill
-            if (parseFloat(p.overage) > 0) {
-                document.getElementById('savings-bridged-pill').classList.remove('hidden');
-                document.getElementById('budget-status-label').textContent = "Bridged from Vault";
-                document.getElementById('budget-status-label').className = "text-[9px] font-black text-orange-400 uppercase";
-            }
+        // 1. POPULATE UI
+        document.getElementById('final-amount').textContent = `₹${parseFloat(p.amount).toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+        document.getElementById('final-merchant').textContent = p.merchantName;
+        document.getElementById('final-cat-pill').textContent = `${p.category.toUpperCase()} NODE`;
+        
+        // Generate tactical ID
+        const randomID = Math.floor(1000 + Math.random() * 8999);
+        document.getElementById('txn-id').textContent = `#FX-${randomID}-SEC`;
+
+        // 2. REAL STATUS: Check if budget was bridged
+        if (parseFloat(p.overage) > 0) {
+            document.getElementById('savings-bridged-pill').classList.remove('hidden');
+            const statusLabel = document.getElementById('budget-status-label');
+            statusLabel.textContent = "Bridged from Vault";
+            statusLabel.className = "text-[9px] font-black text-orange-400 uppercase";
         }
+
+        if (navigator.vibrate) navigator.vibrate(50);
     });
 
-    function finalizeAndHome() {
-        const pending = JSON.parse(sessionStorage.getItem('pending_payment'));
-        
-        if (pending) {
-            // 1. UPDATE MASTER CAPITAL
-            let currentBal = parseFloat(localStorage.getItem('finnexus_balance') || 0);
-            const totalAmount = parseFloat(pending.amount);
-            const overage = parseFloat(pending.overage || 0);
-            
-            // Logic: Subtract the amount that came from the budget. 
-            // The savings pull is technically already in a separate vault or counted as spent from liquidity.
-            localStorage.setItem('finnexus_balance', (currentBal - totalAmount).toFixed(2));
+    function showVerifyModal() {
+        document.getElementById('verify-modal').classList.remove('hidden');
+        document.getElementById('verify-modal').classList.add('flex');
+    }
 
-            // 2. UPDATE CATEGORY SPENDING
-            const catKey = `budget_${pending.category.toLowerCase()}_spent`;
+    function finalize(isSuccess) {
+        if (!activeUser) return window.location.href = '../../index.html';
+        const p = JSON.parse(sessionStorage.getItem('pending_payment'));
+
+        if (isSuccess && p) {
+            // A. SUBTRACT FROM USER BALANCE
+            let currentBal = parseFloat(localStorage.getItem(`${activeUser}_balance`) || 0);
+            localStorage.setItem(`${activeUser}_balance`, (currentBal - parseFloat(p.amount)).toFixed(2));
+
+            // B. UPDATE USER CATEGORY SPENT
+            const catKey = `${activeUser}_budget_${p.category.toLowerCase()}_spent`;
             let currentSpent = parseFloat(localStorage.getItem(catKey) || 0);
-            localStorage.setItem(catKey, (currentSpent + totalAmount).toFixed(2));
+            localStorage.setItem(catKey, (currentSpent + parseFloat(p.amount)).toFixed(2));
 
-            // 3. LOG TO HISTORY
-            let history = JSON.parse(localStorage.getItem('finnexus_history') || '[]');
-            const newLog = {
-                merchant: pending.merchantName,
-                amount: pending.amount,
-                category: pending.category,
-                date: new Date().toLocaleDateString('en-GB'),
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                isSafe: true,
-                isBridged: overage > 0
-            };
-            
-            history.unshift(newLog);
-            localStorage.setItem('finnexus_history', JSON.stringify(history.slice(0, 50))); // Keep last 50
+            // C. LOG SECURE TRANSACTION
+            logToHistory(p, true);
+        } else if (p) {
+            // LOG FAILED ATTEMPT
+            logToHistory(p, false);
         }
 
-        // 4. CLEANUP & REDIRECT
         sessionStorage.removeItem('pending_payment');
         window.location.href = '../../home.html';
+    }
+
+    function logToHistory(p, isSafe) {
+        const historyKey = `${activeUser}_history`;
+        let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+        
+        history.unshift({
+            merchant: p.merchantName,
+            amount: p.amount,
+            category: p.category,
+            date: new Date().toLocaleDateString('en-GB'),
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            isSafe: isSafe,
+            status: isSafe ? "SUCCESS" : "FAILED"
+        });
+
+        localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 50)));
     }
 </script>
 </body>

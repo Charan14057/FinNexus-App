@@ -6,50 +6,79 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;900&display=swap" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body { background-color: #0D0D0D; overflow: hidden; }
+        
         @keyframes pulse-glow { 0%, 100% { filter: drop-shadow(0 0 15px rgba(255, 140, 66, 0.4)); } 50% { filter: drop-shadow(0 0 25px rgba(255, 140, 66, 0.7)); } }
         .animate-glow { animation: pulse-glow 3s ease-in-out infinite; }
-        .mesh-gradient { background: radial-gradient(circle at top left, rgba(255, 140, 66, 0.15), transparent 40%), radial-gradient(circle at bottom right, rgba(255, 179, 71, 0.1), transparent 40%); background-color: #0D0D0D; }
+        
+        .mesh-gradient { 
+            background: radial-gradient(circle at var(--x, 0%) var(--y, 0%), rgba(255, 140, 66, 0.15), transparent 40%), 
+                        radial-gradient(circle at bottom right, rgba(255, 179, 71, 0.1), transparent 40%); 
+            background-color: #0D0D0D; 
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* NEURAL GRID (Amber Theme) */
+        .mesh-gradient::before {
+            content: "";
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255, 140, 66, 0.03) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255, 140, 66, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); }
-        .glossy-button { background: linear-gradient(135deg, #FF8C42 0%, #FFB347 100%); box-shadow: 0 10px 20px -5px rgba(255, 140, 66, 0.5); }
+        .glossy-button { background: linear-gradient(135deg, #FF8C42 0%, #FFB347 100%); box-shadow: 0 10px 25px -5px rgba(255, 140, 66, 0.5); }
     </style>
 </head>
-<body class="text-white font-sans min-h-screen flex flex-col items-center justify-between mesh-gradient overflow-hidden">
+<body class="text-white font-sans mesh-gradient" id="main-body">
     <main class="w-full max-w-md h-screen flex flex-col px-8 pt-12 pb-12 relative z-10">
         <section class="flex flex-col items-center mb-6">
             <div class="relative w-24 h-24 flex items-center justify-center animate-glow">
-                <svg fill="none" height="100" viewbox="0 0 100 100" width="100"><path d="M50 10L90 85H10L50 10Z" fill="url(#amber-gradient)"/><text fill="white" font-size="40" font-weight="900" text-anchor="middle" x="50" y="70">!</text><defs><lineargradient id="amber-gradient" x1="50" x2="50" y1="10" y2="85"><stop stop-color="#FFB347"/><stop offset="1" stop-color="#FF8C42"/></lineargradient></defs></svg>
+                <svg fill="none" height="100" viewbox="0 0 100 100" width="100">
+                    <path d="M50 10L90 85H10L50 10Z" fill="url(#amber-gradient)"/>
+                    <text fill="white" font-size="40" font-weight="900" text-anchor="middle" x="50" y="70">!</text>
+                    <defs>
+                        <lineargradient id="amber-gradient" x1="50" x2="50" y1="10" y2="85">
+                            <stop stop-color="#FFB347"/><stop offset="1" stop-color="#FF8C42"/>
+                        </lineargradient>
+                    </defs>
+                </svg>
             </div>
-            <h1 class="text-3xl font-black tracking-tight mt-4">Limit Exceeded</h1>
-            <p class="text-zinc-500 text-sm uppercase tracking-[0.2em] font-bold mt-1">Smart Reallocation Required</p>
+            <h1 class="text-3xl font-black tracking-tight mt-4 uppercase italic">Limit Breach</h1>
+            <p class="text-orange-500/60 text-[9px] font-black uppercase tracking-[0.4em] mt-1">Firewall Intercept Active</p>
         </section>
 
-        <div class="glass-card rounded-[32px] w-full p-6 flex flex-col gap-6">
+        <div class="glass-card rounded-[40px] w-full p-8 flex flex-col gap-6">
             <div class="space-y-4">
                 <div class="flex justify-between items-center">
-                    <span class="text-zinc-400 text-xs font-bold uppercase">Requested Amount</span>
-                    <span id="breakup-requested" class="text-white font-black text-lg">₹0.00</span>
+                    <span class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">Requested</span>
+                    <span id="breakup-requested" class="text-white font-black text-xl tracking-tighter">₹0.00</span>
                 </div>
                 <div class="h-[1px] bg-white/5 w-full"></div>
                 <div class="flex justify-between items-center">
-                    <span class="text-zinc-400 text-xs font-bold uppercase">Available in <span id="target-cat" class="text-white">...</span></span>
-                    <span id="breakup-budget" class="text-primary text-sm font-bold text-[#3deb91]">₹0.00</span>
+                    <span class="text-zinc-500 text-[10px] font-black uppercase tracking-widest">Segment: <span id="target-cat" class="text-orange-400">...</span></span>
+                    <span id="breakup-budget" class="text-[#3deb91] font-black text-sm">₹0.00</span>
                 </div>
-                <div class="flex justify-between items-center bg-orange-500/10 p-3 rounded-xl border border-orange-500/20">
-                    <span class="text-zinc-300 text-xs font-bold uppercase">Pull from Savings</span>
-                    <span id="breakup-savings" class="text-[#FF8C42] font-black text-lg">₹0.00</span>
+                <div class="flex justify-between items-center bg-orange-500/10 p-4 rounded-2xl border border-orange-500/20">
+                    <span class="text-orange-200 text-[10px] font-black uppercase tracking-widest">Bridging Savings</span>
+                    <span id="breakup-savings" class="text-[#FF8C42] font-black text-xl tracking-tighter">₹0.00</span>
                 </div>
             </div>
             
-            <p class="text-zinc-500 text-[11px] leading-relaxed text-center italic">
-                By proceeding, FinNexus will instantly bridge the <span id="summary-overage" class="text-white font-bold">₹0</span> gap using your protected savings vault.
+            <p class="text-zinc-500 text-[10px] leading-relaxed text-center font-bold uppercase tracking-tighter">
+                FinNexus will authorize a bridge of <span id="summary-overage" class="text-white">₹0</span> from your protected vault.
             </p>
         </div>
 
         <section class="mt-auto space-y-4 pt-10">
-            <button id="auth-btn" onclick="approve()" class="glossy-button w-full py-5 rounded-2xl text-black font-black text-lg active:scale-95 transition-all uppercase tracking-widest">
+            <button id="auth-btn" onclick="approve()" class="glossy-button w-full py-5 rounded-2xl text-black font-black text-sm tracking-[0.2em] active:scale-95 transition-all uppercase">
                 Authorize Bridge
             </button>
-            <button onclick="cancel()" class="glass-card w-full py-5 rounded-2xl text-zinc-400 font-bold uppercase text-xs tracking-widest active:scale-95 transition-all">
+            <button onclick="cancel()" class="glass-card w-full py-5 rounded-2xl text-zinc-500 font-black uppercase text-[10px] tracking-[0.3em] active:scale-95 transition-all border border-white/5">
                 Cancel Payment
             </button>
         </section>
@@ -58,17 +87,25 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const p = JSON.parse(sessionStorage.getItem('pending_payment'));
-            if (p) {
-                const total = parseFloat(p.amount);
-                const overage = parseFloat(p.overage);
-                const budgetPart = Math.max(0, total - overage);
-
-                document.getElementById('breakup-requested').textContent = `₹${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-                document.getElementById('breakup-budget').textContent = `₹${budgetPart.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-                document.getElementById('breakup-savings').textContent = `₹${overage.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-                document.getElementById('summary-overage').textContent = `₹${overage.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
-                document.getElementById('target-cat').textContent = p.category;
+            
+            // SECURITY: Redirect if no payment context exists
+            if (!p) {
+                window.location.href = '../../../home.html';
+                return;
             }
+
+            // Haptic feedback for the breach
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+            const total = parseFloat(p.amount);
+            const overage = parseFloat(p.overage);
+            const budgetPart = Math.max(0, total - overage);
+
+            document.getElementById('breakup-requested').textContent = `₹${total.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById('breakup-budget').textContent = `₹${budgetPart.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById('breakup-savings').textContent = `₹${overage.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById('summary-overage').textContent = `₹${overage.toLocaleString('en-IN', {minimumFractionDigits: 2})}`;
+            document.getElementById('target-cat').textContent = p.category;
         });
 
         function approve() {
@@ -76,22 +113,16 @@
             const btn = document.getElementById('auth-btn');
 
             if (p && p.deepLink) {
-                // 1. VISUAL FEEDBACK
-                btn.textContent = "Opening UPI App...";
+                btn.textContent = "Deploying Bridge...";
                 btn.classList.add('opacity-50', 'pointer-events-none');
 
-                // 2. TRIGGER REAL UPI APP
+                // TRIGGER NATIVE UPI
                 window.location.href = p.deepLink;
 
-                // 3. HANDOFF TO SUCCESS
-                // We wait 1.5 seconds to give the native app time to launch, 
-                // then we move this browser tab to success.html
+                // HANDOFF TO RECEIPT
                 setTimeout(() => {
                     window.location.href = '../success.html';
-                }, 1500);
-            } else {
-                // Fallback for demo mode
-                window.location.href = '../success.html';
+                }, 2000);
             }
         }
 
@@ -99,6 +130,14 @@
             sessionStorage.removeItem('pending_payment');
             window.location.href = '../../../home.html';
         }
+
+        // Live Background Interaction
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            document.getElementById('main-body').style.setProperty('--x', x + '%');
+            document.getElementById('main-body').style.setProperty('--y', y + '%');
+        });
     </script>
 </body>
 </html>

@@ -25,10 +25,22 @@
         /* DANGER MESH BACKGROUND */
         .danger-bg {
             background: 
-                radial-gradient(circle at 50% 50%, rgba(255, 77, 77, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255, 77, 77, 0.15) 0%, transparent 60%),
                 linear-gradient(180deg, #0D0D0D 0%, #050505 100%);
             position: relative;
+            min-height: 100vh;
             overflow: hidden;
+        }
+
+        /* RED NEURAL GRID (Commercial Fill) */
+        .danger-bg::before {
+            content: "";
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255, 77, 77, 0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(255, 77, 77, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 0;
         }
 
         /* SCANNELINE GLITCH EFFECT */
@@ -39,6 +51,7 @@
             background-size: 100% 3px;
             pointer-events: none;
             animation: scanline 10s linear infinite;
+            z-index: 1;
         }
         @keyframes scanline { from { background-position: 0 0; } to { background-position: 0 100%; } }
 
@@ -46,17 +59,17 @@
         
         /* SHIELD HEARTBEAT */
         .animate-shield {
-            animation: shield-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            animation: shield-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
         @keyframes shield-pulse {
             0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 77, 77, 0.5)); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 30px rgba(255, 77, 77, 0.8)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 40px rgba(255, 77, 77, 0.8)); }
         }
 
         .font-black-italic { font-weight: 900; font-style: italic; }
     </style>
 </head>
-<body class="danger-bg font-display text-slate-100 min-h-screen flex flex-col antialiased">
+<body class="danger-bg font-display text-slate-100 min-h-screen flex flex-col antialiased" id="main-body">
 
     <header class="flex items-center justify-between p-8 z-10">
         <button onclick="exitToHome()" class="size-11 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 active:scale-75 transition-transform">
@@ -88,17 +101,17 @@
         </div>
 
         <div class="max-w-xs mx-auto space-y-4 px-4">
-            <p class="text-white text-lg font-black tracking-tight leading-tight uppercase">
+            <p class="text-white text-lg font-black tracking-tight leading-tight uppercase italic">
                 Merchant Identity Flagged
             </p>
             <p class="text-slate-500 text-[11px] font-bold uppercase leading-relaxed tracking-wider">
-                This recipient node is indexed in our fraud database. The bridge has been severed to protect your assets.
+                This recipient node is indexed in our global fraud database. The bridge has been severed to protect your assets from a high-risk transaction attempt.
             </p>
         </div>
     </main>
 
     <footer class="p-10 pb-16 space-y-6 relative z-10">
-        <button onclick="reportAndExit()" class="w-full py-5 bg-emergency rounded-2xl text-black font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(255,77,77,0.3)] active:scale-95 transition-all">
+        <button id="report-btn" onclick="reportAndExit()" class="w-full py-5 bg-emergency rounded-2xl text-black font-black text-sm uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(255,77,77,0.3)] active:scale-95 transition-all">
             <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1">report</span>
             File Fraud Report
         </button>
@@ -109,37 +122,61 @@
     </footer>
 
     <script>
+        const activeUser = localStorage.getItem('fn_user');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. DANGER HAPTICS (APK Android Support)
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+        });
+
         function exitToHome() {
-            // Clean up session data
             sessionStorage.removeItem('pending_payment');
             window.location.href = '../../../home.html';
         }
 
         function reportAndExit() {
-            // 1. GATHER DATA FROM THE SCAM ATTEMPT
+            if (!activeUser) return exitToHome();
+
             const p = JSON.parse(sessionStorage.getItem('pending_payment')) || { 
                 merchantName: "Unknown Threat", 
                 amount: "0.00" 
             };
 
-            // 2. LOG THE BLOCKED TRANSACTION TO HISTORY
-            const history = JSON.parse(localStorage.getItem('finnexus_history') || '[]');
+            // 2. USER-KEYED HISTORY LOGGING (Data Isolation)
+            const historyKey = `${activeUser}_history`;
+            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            
             const blockEntry = {
                 merchant: p.merchantName,
                 amount: p.amount,
                 date: new Date().toLocaleDateString('en-GB'),
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 category: 'Blocked',
-                isSafe: false // This tells history.html to use the RED UI
+                isSafe: false 
             };
 
             history.unshift(blockEntry);
-            localStorage.setItem('finnexus_history', JSON.stringify(history));
+            localStorage.setItem(historyKey, JSON.stringify(history));
 
-            // 3. EXIT
-            alert("Threat Reported. Transaction data purged. Node has been blacklisted locally.");
-            exitToHome();
+            const btn = document.getElementById('report-btn');
+            btn.textContent = "THREAT REPORTED";
+            btn.classList.add('opacity-50', 'pointer-events-none');
+
+            setTimeout(() => {
+                alert("Threat Indexed. Secure link established with local enforcement authorities. Node blacklisted.");
+                exitToHome();
+            }, 1000);
         }
+
+        // Live Interaction
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            document.getElementById('main-body').style.setProperty('--x', x + '%');
+            document.getElementById('main-body').style.setProperty('--y', y + '%');
+        });
     </script>
 </body>
 </html>
