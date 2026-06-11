@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node scripts/review-server.js",
+    "review": "node scripts/review-server.js",
+    "test": "node -e \"require('fs').accessSync('www/index.html'); require('fs').accessSync('www/pay.html'); console.log('FinNexus static sanity check passed')\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@capacitor/android": "^8.3.0",
     "@capacitor/cli": "^8.2.0",
     "@capacitor/core": "^8.2.0"
   }

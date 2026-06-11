@@ -122,7 +122,8 @@
 
 <script>
     // DATA ISOLATION
-    const activeUser = localStorage.getItem('fn_user') || 'guest';
+    const activeUser = localStorage.getItem('fn_user');
+    if (!activeUser) window.location.href = 'index.html';
     const historyKey = `${activeUser}_history`;
 
     const icons = {

@@ -1,33 +1,46 @@
 /**
  * FinNexus Core Logic Engine
- * Handles: Defender (Scams), Controller (Budgets), and Saver (Logs)
+ * Shared local-first helpers for profile isolation and Defender data.
  */
 const FinNexus = {
-    // 1. DATASETS
-    blacklist: [], // Will be loaded from blacklist.json
-    
-    // 2. INITIALIZE
+    blacklist: [],
+
     init: async function() {
         try {
             const resp = await fetch('/assets/data/blacklist.json');
             this.blacklist = await resp.json();
-            console.log("🛡️ Firewall Engine: Active");
+            console.log("FinNexus Firewall Engine: Active");
         } catch (e) {
             console.warn("Could not load blacklist. Using local failsafe.");
-            this.blacklist = [{id: 'scam@upi', name: 'Scammer'}];
+            this.blacklist = [{ id: 'scam@upi', name: 'Scammer' }];
         }
     },
 
-    // 3. THE DEFENDER
     checkDefender: function(upiId) {
-        return this.blacklist.find(item => item.id.toLowerCase() === upiId.toLowerCase());
+        if (!upiId) return null;
+        return this.blacklist.find(item => item.id.toLowerCase() === upiId.toLowerCase()) || null;
     },
 
-    // 4. THE SAVER / CONTROLLER
+    getActiveUser: function() {
+        return localStorage.getItem('fn_user');
+    },
+
     getProfile: function() {
-        return JSON.parse(localStorage.getItem('finnexus_active_profile')) || null;
+        const activeUser = this.getActiveUser();
+        return activeUser ? JSON.parse(localStorage.getItem(`profile_${activeUser}`)) : null;
+    },
+
+    saveProfile: function(profile) {
+        const activeUser = this.getActiveUser();
+        if (!activeUser) return false;
+        localStorage.setItem(`profile_${activeUser}`, JSON.stringify(profile));
+        return true;
+    },
+
+    getHistoryKey: function() {
+        const activeUser = this.getActiveUser();
+        return activeUser ? `${activeUser}_history` : null;
     }
 };
 
-// Start the engine
 FinNexus.init();

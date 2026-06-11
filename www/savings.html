@@ -251,13 +251,20 @@
         loadSavings();
     }
 
-    // Live Interaction
-    document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth) * 100;
-        const y = (e.clientY / window.innerHeight) * 100;
+    // Unified Live Interaction (Mouse & Touch)
+    const updateBG = (clientX, clientY) => {
+        const x = (clientX / window.innerWidth) * 100;
+        const y = (clientY / window.innerHeight) * 100;
         document.getElementById('main-body').style.setProperty('--x', x + '%');
         document.getElementById('main-body').style.setProperty('--y', y + '%');
-    });
+    };
+
+    document.addEventListener('mousemove', (e) => updateBG(e.clientX, e.clientY));
+    document.addEventListener('touchmove', (e) => {
+        if (e.touches && e.touches[0]) {
+            updateBG(e.touches[0].clientX, e.touches[0].clientY);
+        }
+    }, { passive: true });
 
     document.addEventListener('DOMContentLoaded', loadSavings);
 </script>

@@ -8,73 +8,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;600;700;900&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <style>
-        body {
-            font-family: 'Inter Tight', sans-serif;
-            background-color: #0D0D0D;
-            min-height: 100vh;
-            overflow: hidden;
-            color: white;
-        }
+        body { font-family: 'Inter Tight', sans-serif; background-color: #0D0D0D; min-height: 100vh; overflow: hidden; color: white; }
+        .aurora-mesh { position: fixed; inset: 0; background: radial-gradient(circle at var(--x, 50%) var(--y, -10%), rgba(61, 235, 145, 0.12) 0%, transparent 50%), radial-gradient(circle at 50% 110%, rgba(6, 182, 212, 0.08) 0%, transparent 40%); z-index: -1; transition: background 0.3s ease-out; }
+        .glass-card { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.06); transition: all 0.3s ease; }
+        .terms-box::-webkit-scrollbar { width: 2px; }
+        .terms-box::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.2); border-radius: 10px; }
 
-        /* SYNCED LIVE BACKGROUND */
-        .aurora-mesh {
-            background: 
-                radial-gradient(circle at var(--x, 50%) var(--y, -10%), rgba(61, 235, 145, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 110%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
-            position: fixed; inset: 0; pointer-events: none; z-index: -1;
-            transition: background 0.3s ease-out;
-        }
+        /* FIX: Custom Checkbox styling */
+        .custom-checkbox { width: 22px; height: 22px; border: 2px solid rgba(6, 182, 212, 0.4); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s ease; }
+        #terms-check:checked + .custom-checkbox { background-color: #06B6D4; border-color: #06B6D4; }
+        .tick-mark { color: black; font-size: 16px; font-weight: 900; display: none; }
+        #terms-check:checked + .custom-checkbox .tick-mark { display: block; }
+        
+        /* Visual feedback for the card when checked */
+        .check-card-active { border-color: rgba(6, 182, 212, 0.5) !important; background: rgba(6, 182, 212, 0.05) !important; }
 
-        .glass-checkbox-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: all 0.3s ease;
-        }
-
-        .custom-checkbox {
-            width: 24px;
-            height: 24px;
-            border: 2px solid rgba(6, 182, 212, 0.4);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-
-        #terms-check:checked + .custom-checkbox {
-            background-color: #06B6D4;
-            border-color: #06B6D4;
-        }
-
-        .tick-mark {
-            color: black;
-            font-size: 18px;
-            font-weight: 900;
-            display: none;
-        }
-
-        #terms-check:checked + .custom-checkbox .tick-mark {
-            display: block;
-        }
-
-        .btn-3d-emerald {
-            background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%);
-            box-shadow: 0 12px 30px -10px rgba(61, 235, 145, 0.5),
-                        inset 0 2px 4px rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .btn-inactive {
-            background: #222 !important;
-            box-shadow: none !important;
-            color: #555 !important;
-            pointer-events: none;
-            opacity: 0.5;
-        }
-
+        .btn-3d-emerald { background: linear-gradient(180deg, #3deb91 0%, #1a9e66 100%); box-shadow: 0 12px 30px -10px rgba(61, 235, 145, 0.5); transition: all 0.3s ease; }
+        .btn-inactive { background: #222 !important; box-shadow: none !important; color: #555 !important; pointer-events: none !important; opacity: 0.5; }
         .fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
         @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -82,44 +32,90 @@
 <body class="p-6 flex flex-col items-center">
     <div class="aurora-mesh" id="mesh"></div>
     
-    <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-10 fade-in">
+    <header class="relative z-10 w-full max-w-sm flex items-center justify-between mb-8 fade-in">
         <button onclick="window.history.back()" class="p-2 -ml-2 text-slate-500 hover:text-white transition-all active:scale-75">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </button>
         <h2 class="text-xs font-black tracking-[0.3em] uppercase text-primary italic">FinNexus Node</h2>
         <div class="w-10"></div>
     </header>
 
-    <main class="flex-1 flex flex-col items-center justify-center w-full max-w-sm text-center -mt-10">
-        <div class="mb-12 relative fade-in">
-            <div class="absolute inset-0 bg-cyan-400/10 blur-[60px] rounded-full animate-pulse"></div>
-            <div class="relative w-32 h-32 bg-white/5 border border-white/10 rounded-full flex items-center justify-center">
-                <span class="material-symbols-outlined text-6xl text-cyan-400" style="font-variation-settings: 'FILL' 1">shield_with_heart</span>
+    <main class="flex-1 flex flex-col w-full max-w-sm">
+        <div class="flex flex-col items-center text-center mb-6 fade-in">
+            <div class="relative mb-6">
+                <div class="absolute inset-0 bg-cyan-400/10 blur-[40px] rounded-full animate-pulse"></div>
+                <div class="relative w-20 h-20 bg-white/5 border border-white/10 rounded-full flex items-center justify-center">
+                    <span class="material-symbols-outlined text-4xl text-cyan-400" style="font-variation-settings: 'FILL' 1">shield_with_heart</span>
+                </div>
+            </div>
+            <h1 class="text-2xl font-black tracking-tight text-white uppercase italic">Final Protocol</h1>
+        </div>
+
+        <div class="glass-card rounded-3xl p-5 mb-6 fade-in" style="animation-delay: 0.1s">
+            <div class="terms-box overflow-y-auto max-h-[220px] pr-2 text-left space-y-4">
+                <h4 class="text-[11px] font-black text-cyan-400 uppercase tracking-widest">Terms & Privacy Policy</h4>
+                <p class="text-[10px] text-slate-500 font-bold uppercase">FinNexus: Terms of Service & Privacy Policy
+Last Updated: March 2026
+
+1. Nature of Service
+FinNexus operates strictly as a Financial Decision Layer.
+
+Not a Payment Service: FinNexus is not a bank, a wallet, or a Payment Service Provider (PSP). We do not hold, transfer, or process real-world currency.
+
+Intermediate Layer: We act as an interceptor between a QR scan and your chosen UPI application (GPay, PhonePe, etc.).
+
+The "Firewall" Principle: Our software provides risk assessments and budget alerts. The final decision to enter a PIN and authorize a payment rests solely with the user.
+
+2. Data Privacy & "On-Device" Guarantee
+Your financial privacy is our core architectural priority.
+
+Local Processing: All transaction analysis—including scam detection ("The Defender") and budget tracking ("The Saver")—is performed locally on your device.
+
+Zero-Cloud Storage: FinNexus does not transmit your personal transaction history, merchant details, or budget data to our servers. Your data stays on your phone.
+
+Permissions: To function, the app requires access to:
+
+Camera: Strictly for QR code scanning.
+
+SMS (Optional): Strictly for parsing automated bank transaction alerts to update your local "Saver" dashboard.
+
+Device Storage: To maintain your local encrypted database of flagged scammers and personal limits.
+
+3. The "Defender" Security Disclaimer
+While our "Defender" database is cross-referenced with verified cybersecurity datasets:
+
+No Guarantee of Absolute Safety: No cybersecurity tool is 100% foolproof. While we block known threats, new "zero-day" scam accounts may exist. FinNexus is a layer of defense, not a replacement for user vigilance.
+
+Community Flagging: By using the "Flag Scam" feature, you agree to contribute anonymous UPI IDs to our community blacklist to protect other users.
+
+4. "The Saver" & Financial Limits
+Assumed Data: "The Saver" uses assumed or manually entered data to help you visualize your spending habits.
+
+Impulse Alerts: Our "Red Warning" and button-removal features are interventionist tools. By accepting these terms, you authorize the app to introduce intentional friction (Speed Bumps) into your payment flow for your own financial protection.
+
+5. Third-Party Redirection (Deep Linking)
+FinNexus utilizes Android Deep Linking to launch external UPI apps. We are not responsible for the performance, security, or failures of third-party applications like GPay, PhonePe, or Paytm once the handoff is complete.
+
+6. Limitation of Liability
+FinNexus shall not be held liable for any financial loss, fraudulent transactions, or budget overages incurred. The app is a tool to assist in decision-making, but the User maintains 100% responsibility for every transaction authorized.
+
+Agreement:
+By clicking "Accept and Proceed," you acknowledge that you have read, understood, and agreed to the local-first processing model and the liability disclaimers of FinNexus.</p>
             </div>
         </div>
 
-        <div class="space-y-3 mb-10 fade-in">
-            <h1 class="text-3xl font-black tracking-tight text-white uppercase italic">Final Protocol</h1>
-            <p class="text-slate-500 text-[11px] font-bold uppercase tracking-widest max-w-[250px] mx-auto leading-relaxed">
-                Confirm your agreement to initialize the firewall bridge.
-            </p>
-        </div>
-
-        <label class="glass-checkbox-card w-full rounded-3xl p-6 flex items-center gap-5 cursor-pointer hover:bg-white/5 transition-all mb-10 fade-in">
-            <input type="checkbox" id="terms-check" class="hidden" onchange="toggleButton()"/>
+        <label id="card-label" class="glass-card rounded-2xl p-5 flex items-center gap-4 cursor-pointer hover:bg-white/5 transition-all mb-4 fade-in" style="animation-delay: 0.2s">
+            <input type="checkbox" id="terms-check" class="opacity-0 absolute pointer-events-none" onchange="toggleButton()"/>
             <div class="custom-checkbox">
                 <span class="tick-mark">✓</span>
             </div>
-            <span class="text-left text-[11px] font-bold uppercase leading-relaxed tracking-wider text-slate-300">
+            <span class="text-left text-[10px] font-bold uppercase leading-relaxed tracking-wider text-slate-300">
                 I accept the FinNexus Terms & Deployment Protocols.
             </span>
         </label>
     </main>
 
-    <footer class="p-8 w-full max-w-sm fade-in">
+    <footer class="p-6 w-full max-w-sm fade-in" style="animation-delay: 0.3s">
         <button id="activate-btn" class="btn-3d-emerald btn-inactive w-full py-5 rounded-2xl text-black font-black text-sm tracking-[0.3em] uppercase flex items-center justify-center gap-3 active:scale-95 transition-all">
             INITIALIZE CORE
             <span class="material-symbols-outlined text-lg">bolt</span>
@@ -130,50 +126,37 @@
         const activeUser = localStorage.getItem('fn_user');
         const mesh = document.getElementById('mesh');
 
-        // 1. Live Background Sync
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
+        const updateBG = (clientX, clientY) => {
+            const x = (clientX / window.innerWidth) * 100;
+            const y = (clientY / window.innerHeight) * 100;
             mesh.style.setProperty('--x', `${x}%`);
             mesh.style.setProperty('--y', `${y}%`);
-        });
+        };
+        document.addEventListener('mousemove', (e) => updateBG(e.clientX, e.clientY));
+        document.addEventListener('touchmove', (e) => updateBG(e.touches[0].clientX, e.touches[0].clientY));
 
-        // Checkbox Logic: Only enable button if checked
+        // IMPROVED: Logic to ensure button unlocks
         function toggleButton() {
             const checkbox = document.getElementById('terms-check');
             const btn = document.getElementById('activate-btn');
+            const card = document.getElementById('card-label');
             
             if (checkbox.checked) {
                 btn.classList.remove('btn-inactive');
+                card.classList.add('check-card-active');
                 if (navigator.vibrate) navigator.vibrate(15);
             } else {
                 btn.classList.add('btn-inactive');
+                card.classList.remove('check-card-active');
             }
         }
 
         document.getElementById('activate-btn').addEventListener('click', () => {
             if (!activeUser) return window.location.href = '../../index.html';
-
-            // GATHER DATA SAVED IN STEP 1 & 2
             const existingProfile = JSON.parse(localStorage.getItem(`profile_${activeUser}`)) || {};
-            
-            // SEAL PERMANENT PROFILE
-            const finalProfile = {
-                ...existingProfile,
-                status: "ACTIVE",
-                activationDate: new Date().toISOString(),
-                termsAccepted: true
-            };
-
-            // SAVE TO PERMANENT USER-KEYED DATABASE
+            const finalProfile = { ...existingProfile, status: "ACTIVE", activationDate: new Date().toISOString(), termsAccepted: true };
             localStorage.setItem(`profile_${activeUser}`, JSON.stringify(finalProfile));
-            
-            // INITIALIZE BLANK WALLET FOR THIS USER
-            if (!localStorage.getItem(`${activeUser}_balance`)) {
-                localStorage.setItem(`${activeUser}_balance`, "0");
-            }
-
-            // REDIRECT TO DASHBOARD
+            if (!localStorage.getItem(`${activeUser}_balance`)) localStorage.setItem(`${activeUser}_balance`, "0");
             window.location.href = '../../home.html';
         });
     </script>

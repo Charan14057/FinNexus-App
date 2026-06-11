@@ -127,14 +127,21 @@
             const mesh = document.getElementById('mesh');
             const activeUser = localStorage.getItem('fn_user');
             
-            if (!activeUser) window.location.href = '../../index.html';
+            if (!activeUser) {
+                window.location.href = '../../index.html';
+                return;
+            }
 
-            document.addEventListener('mousemove', (e) => {
-                const x = (e.clientX / window.innerWidth) * 100;
-                const y = (e.clientY / window.innerHeight) * 100;
+            // 1. IMPROVED: Unified Parallax for PC and Mobile (Touch Support)
+            const updateBG = (clientX, clientY) => {
+                const x = (clientX / window.innerWidth) * 100;
+                const y = (clientY / window.innerHeight) * 100;
                 mesh.style.setProperty('--x', `${x}%`);
                 mesh.style.setProperty('--y', `${y}%`);
-            });
+            };
+
+            document.addEventListener('mousemove', (e) => updateBG(e.clientX, e.clientY));
+            document.addEventListener('touchmove', (e) => updateBG(e.touches[0].clientX, e.touches[0].clientY));
 
             let selectedApp = "Google Pay";
 
@@ -147,9 +154,10 @@
             });
 
             nextBtn.addEventListener('click', () => {
-                const profile = JSON.parse(localStorage.getItem(`profile_${activeUser}`)) || {};
+                const profileKey = `profile_${activeUser}`;
+                const profile = JSON.parse(localStorage.getItem(profileKey)) || {};
                 profile.preferred_upi = selectedApp;
-                localStorage.setItem(`profile_${activeUser}`, JSON.stringify(profile));
+                localStorage.setItem(profileKey, JSON.stringify(profile));
                 window.location.href = 'step-3.html';
             });
         });

@@ -1,5 +1,9 @@
 {
   "appId": "com.finnexus.app",
-  "appName": "finnexus-app",
-  "webDir": "www"
+  "appName": "FinNexus",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "allowNavigation": ["upi://*"] 
+  }
 }

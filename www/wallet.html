@@ -70,9 +70,8 @@
                 <span class="material-symbols-outlined text-7xl text-primary">account_balance_wallet</span>
             </div>
             <div class="flex justify-between items-start mb-2">
-                <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Available Capital</p>
-                <button onclick="editMainBalance()" class="text-primary active:scale-90 transition-transform"><span class="material-symbols-outlined text-sm">edit</span></button>
-            </div>
+                <p id="admin-trigger" class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500 cursor-default select-none">Available Capital</p>
+                <div class="w-4"></div> </div>
             <h2 id="live-wallet-balance" class="big-number text-white mb-6">₹0.00</h2>
             
             <div class="pt-6 border-t border-white/5">
@@ -139,11 +138,33 @@
         cumulativePrefix: (name) => `${activeUser}_budget_${name.toLowerCase()}_cumulative_saved`
     };
 
+    // 1. HIDDEN ADMIN LOGIC (Long Press 3s)
+    let pressTimer;
+    const trigger = document.getElementById('admin-trigger');
+
+    const startPress = () => {
+        pressTimer = window.setTimeout(() => {
+            editMainBalance();
+        }, 3000);
+    };
+    const endPress = () => clearTimeout(pressTimer);
+
+    trigger.addEventListener('touchstart', startPress);
+    trigger.addEventListener('touchend', endPress);
+    trigger.addEventListener('mousedown', startPress);
+    trigger.addEventListener('mouseup', endPress);
+
+    function editMainBalance() {
+        const current = localStorage.getItem(keys.balance) || "0";
+        const newVal = prompt("ADMIN: Sync Total Available Capital:", current);
+        if (newVal !== null && !isNaN(parseFloat(newVal))) {
+            localStorage.setItem(keys.balance, parseFloat(newVal).toFixed(2));
+            renderUI();
+        }
+    }
+
     function loadAndCheck() {
-        // 1. Initial Data Setup
         let walletData = JSON.parse(localStorage.getItem(keys.walletData));
-        
-        // AUTO-INJECT COMMON CATEGORIES FOR NEW USERS
         if (!walletData || walletData.categories.length === 0) {
             walletData = { 
                 categories: [
@@ -156,7 +177,6 @@
             localStorage.setItem(keys.walletData, JSON.stringify(walletData));
         }
 
-        // 2. Cycle Logic
         const expiryStr = localStorage.getItem(keys.cycleEnd);
         if (!expiryStr) {
             const start = new Date();
@@ -274,15 +294,6 @@
         }
     }
 
-    function editMainBalance() {
-        const current = localStorage.getItem(keys.balance) || "0";
-        const newVal = prompt("Update Total Capital:", current);
-        if (newVal !== null && !isNaN(parseFloat(newVal))) {
-            localStorage.setItem(keys.balance, parseFloat(newVal).toFixed(2));
-            renderUI();
-        }
-    }
-
     function manualReset() {
         if (confirm("End cycle now? Surpluses will migrate to Vault.")) performMonthEndSweep();
     }
@@ -317,12 +328,15 @@
         }
     }
 
-    document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth) * 100;
-        const y = (e.clientY / window.innerHeight) * 100;
-        document.getElementById('main-body').style.setProperty('--x', `${x}%`);
-        document.getElementById('main-body').style.setProperty('--y', `${y}%`);
-    });
+    // 2. UNIFIED BACKGROUND INTERACTION
+    const updateBG = (clientX, clientY) => {
+        const x = (clientX / window.innerWidth) * 100;
+        const y = (clientY / window.innerHeight) * 100;
+        document.getElementById('main-body').style.setProperty('--x', x + '%');
+        document.getElementById('main-body').style.setProperty('--y', y + '%');
+    };
+    document.addEventListener('mousemove', (e) => updateBG(e.clientX, e.clientY));
+    document.addEventListener('touchmove', (e) => updateBG(e.touches[0].clientX, e.touches[0].clientY));
 
     document.addEventListener('DOMContentLoaded', loadAndCheck);
 </script>

@@ -164,9 +164,9 @@
     </div>
 
 <script>
-    const mobile = localStorage.getItem('finnexus_temp_mobile');
-    const profileKey = `finnexus_profile_${mobile}`;
-    let profile = JSON.parse(localStorage.getItem(profileKey));
+    let mobile = localStorage.getItem('fn_user');
+    let profileKey = mobile ? `profile_${mobile}` : null;
+    let profile = profileKey ? JSON.parse(localStorage.getItem(profileKey)) : null;
 
     function loadData() {
         if(!profile) return window.location.href = 'index.html';
@@ -191,10 +191,23 @@
         const labels = { name: 'Identity Name', mobile: 'Mobile Number' };
         const newVal = prompt(`Update ${labels[field]}:`, profile[field]);
         if(newVal && newVal.trim().length > 0) {
-            profile[field] = newVal;
+            if(field === 'mobile') {
+                const cleanMobile = newVal.replace(/\D/g, '').slice(-10);
+                if (cleanMobile.length !== 10) {
+                    alert("Enter a valid 10 digit mobile number.");
+                    return;
+                }
+
+                localStorage.removeItem(profileKey);
+                profile.mobile = cleanMobile;
+                mobile = cleanMobile;
+                profileKey = `profile_${mobile}`;
+                localStorage.setItem('fn_user', mobile);
+            } else {
+                profile[field] = newVal.trim();
+            }
+
             localStorage.setItem(profileKey, JSON.stringify(profile));
-            // If phone was changed, we need to update the key too
-            if(field === 'mobile') localStorage.setItem('finnexus_temp_mobile', newVal);
             loadData();
         }
     }
@@ -211,7 +224,7 @@
 
     function terminate() {
         if(confirm("DEAUTHORIZE DEVICE? This will wipe your active session and return you to the login protocol.")) {
-            localStorage.removeItem('finnexus_temp_mobile');
+            localStorage.removeItem('fn_user');
             window.location.href = 'index.html';
         }
     }
